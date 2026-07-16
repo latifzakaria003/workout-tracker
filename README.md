@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -73,3 +74,7 @@ export default defineConfig([
 ])
 
 ```
+=======
+# workout-tracker
+WorkoutTracker is a web application developed with React and Firebase that allows users to create and manage personalized workout routines. The system integrates an external REST API for exercise search, uses Firestore for data persistence, and implements authentication and Progressive Web App features such as offline support and installability.
+>>>>>>> fe1f84ef36c15b4a41278e3520632f0ae440790d
