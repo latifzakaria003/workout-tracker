@@ -1,0 +1,54 @@
+.navbarAdjustment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 1rem 2rem;
+
+    background-color: rgba(72, 71, 71, 0.708);
+
+    border-bottom: 1px solid #e5e5e5;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.links {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.links:hover {
+    color: #4285F4;
+}
+
+.userSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.userName {
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.logOutButton {
+    padding: 0.5rem 1rem;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: #ef4444;
+    color: white;
+
+    cursor: pointer;
+    font-weight: 600;
+
+    transition: background-color 0.2s;
+}
+
+.logOutButton:hover {
+    background-color: #dc2626;
+}

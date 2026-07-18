@@ -1,19 +1,40 @@
 
 import './App.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Login } from './pages/login';
 import { Home } from './pages/home';
+import { useState, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebase/firebase'
+import { Signup } from './pages/signup';
 
 
 
 function App() {
 
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+
+
+  }, [])
+
+  if (loading) return <h1>Loading...</h1>;
+
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path={"/"} element={<Home />}> </Route>
-          <Route path="/login" element={<Login />}> </Route>
+          <Route path={"/"} element={user ? <Home /> : <Navigate to='/login' />}> </Route>
+          <Route path="/login" element={!user ? <Login /> : <Navigate to='/' />}> </Route>
+          <Route path="/signup" element={<Signup />}> </Route>
+
+
 
           <Route path="*" element={<h1>Page not Found </h1>}> </Route>
 
