@@ -2,7 +2,7 @@ import { AuthForm } from '../components/authForm';
 import { Navbar } from '../components/navbar';
 import styles from '../components/authForm.module.css';
 
-export const Signup = () => {
+export const SignUp = () => {
 
     return (
         <>

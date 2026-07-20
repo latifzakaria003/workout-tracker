@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.title {
+    color: white;
+    margin-bottom: 40px;
+    font-size: 2rem;
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.workoutButton {
+    width: 250px;
+    height: 60px;
+    border: none;
+    border-radius: 12px;
+    background-color: #3b82f6;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.workoutButton:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.workoutButton:active {
+    transform: translateY(0);
+}
