@@ -1,0 +1,31 @@
+.actions {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.addButton {
+    background-color: #2563eb;
+    color: white;
+
+    border: none;
+    border-radius: 12px;
+
+    padding: 12px 25px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.addButton:hover {
+    background-color: #1d4ed8;
+    transform: scale(1.05);
+}
+
+.addButton:active {
+    transform: scale(0.98);
+}

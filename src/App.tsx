@@ -30,10 +30,10 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path={"/"} element={user ? <Home /> : <Navigate to='/login' />}> </Route>
+          <Route path="/" element={user ? <Home /> : <Navigate to='/login' />}> </Route>
           <Route path="/login" element={!user ? <Login /> : <Navigate to='/' />}> </Route>
           <Route path="/signUp" element={<SignUp />}> </Route>
-          <Route path={"/editWorkout"} element={user ? <EditWorkout /> : <Navigate to='/login' />}> </Route>
+          <Route path="/editWorkout/:id?" element={user ? <EditWorkout /> : <Navigate to='/login' />}> </Route>
 
 
           <Route path="*" element={<h1>Page not Found </h1>}> </Route>

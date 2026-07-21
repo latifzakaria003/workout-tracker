@@ -1,57 +1,180 @@
-import styles from "./ExerciseCard.module.css";
-import type { Exercises } from "../types";
+import styles from "./exerciseCard.module.css";
+import type { ExerciseCardProps } from "../types";
+import { doc, updateDoc, deleteField } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
+import { useEffect, useState } from 'react';
+
+export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
+
+    const [isAddingSet, setIsAddingSet] = useState(false);
+    const [isDeletingSet, setisDeletingSet] = useState(false);
+    const [editingSet, setEditingSet] = useState<string | null>(null);
+    const [editWeight, setEditWeight] = useState(0);
+    const [editReps, setEditReps] = useState(0);
+
+    const [newWeight, setNewWeight] = useState(0);
+    const [newReps, setNewReps] = useState(0);
+
+    const Addset = async () => {
+        const workoutRef = doc(db, "workouts", exercise.docId);
+        const maxKey = Object.keys(exercise.sets).length === 0
+            ? 0
+            : Math.max(...Object.keys(exercise.sets).map(Number));
+
+        const newKey = maxKey + 1;
+
+        await updateDoc(workoutRef, {
+            [`exercises.${exercise.id}.sets.${newKey}`]: {
+                reps: newReps,
+                weight: newWeight
+            }
+        });
+        setIsAddingSet(false);
+        onUpdate();
+    };
+    const DeleteSet = async (setId: string) => {
+        const workoutRef = doc(db, "workouts", exercise.docId);
+
+        await updateDoc(workoutRef, {
+            [`exercises.${exercise.id}.sets.${setId}`]: deleteField()
+        });
+        setisDeletingSet(false);
+        onUpdate();
+    }
+
+    const EditSet = async (setId: string) => {
+        const workoutRef = doc(db, "workouts", exercise.docId);
+
+        await updateDoc(workoutRef, {
+            [`exercises.${exercise.id}.sets.${setId}`]: {
+                weight: editWeight,
+                reps: editReps
+            }
+        });
+
+        setEditingSet(null);
+        onUpdate();
+    }
+
+    useEffect(() => {
+        onUpdate();
+    }, []);
 
 
-export const ExerciseCard = ({
-    exerciseName,
-    exerciseOrder,
-    exerciseSourceId,
-    imageUrl,
-    muscleGroup,
-    rest,
-    sets
-}: Exercises) => {
 
     return (
-        <div className={styles.card} key={exerciseOrder}>
+        <div className={styles.card} key={exercise.exerciseOrder}>
 
             <h1 className={styles.title}>
-                {exerciseName}
+                {exercise.exerciseName}
             </h1>
 
             <img
                 className={styles.image}
-                src={imageUrl}
+                src={exercise.imageUrl}
                 alt="image"
             />
 
-            <div className={styles.info}>
-                <p>ID: {exerciseSourceId}</p>
-                <p>Muscle: {muscleGroup}</p>
-                <p>Rest: {rest}min</p>
+            <div className={styles.info} key={exercise.id}>
+                <p>ID: {exercise.exerciseSourceId}</p>
+                <p>Muscle: {exercise.muscleGroup}</p>
+                <p>Rest: {exercise.rest}min</p>
             </div>
 
 
             <div className={styles.setsContainer}>
-                {sets.map((set, index) => (
+                {Object.entries(exercise.sets).map(([setId, set], index) => (
                     <div
                         className={styles.set}
                         key={index}
                     >
+
                         <span className={styles.setLabel}>
                             Set {index + 1}
                         </span>
 
-                        <span className={styles.setValue}>
-                            {set.weight} kg
-                        </span>
+                        {editingSet === setId ? (
+                            <>
+                                <input
+                                    className={styles.input}
+                                    value={editWeight}
+                                    onChange={(e) => setEditWeight(Number(e.target.value))}
+                                />
 
-                        <span className={styles.setValue}>
-                            {set.reps} reps
-                        </span>
+                                <input
+                                    className={styles.input}
+                                    value={editReps}
+                                    onChange={(e) => setEditReps(Number(e.target.value))}
+                                />
+
+                                <button className={styles.cancelButton} onClick={() => setEditingSet(null)}>
+                                    Cancel
+                                </button>
+                                <button className={styles.saveButton} onClick={() => EditSet(setId)}>
+                                    Save
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <span
+                                    className={styles.setValue}
+                                    onDoubleClick={() => {
+                                        setEditingSet(setId);
+                                        setEditWeight(set.weight);
+                                        setEditReps(set.reps);
+                                    }}
+                                >
+                                    {set.weight} kg
+                                </span>
+
+                                <span
+                                    className={styles.setValue}
+                                    onDoubleClick={() => {
+                                        setEditingSet(setId);
+                                        setEditWeight(set.weight);
+                                        setEditReps(set.reps);
+                                    }}
+                                >
+                                    {set.reps} reps
+                                </span>
+                            </>
+                        )}
+                        {isDeletingSet &&
+                            <button
+                                className={styles.removeButton}
+                                onClick={() => {
+                                    DeleteSet(setId);
+                                }}
+                            >Remove</button>}
                     </div>
                 ))}
+
             </div>
+            {isAddingSet && (
+
+                <div className={styles.addSetForm}>
+                    <input placeholder="Weight.."
+                        onChange={(e) => setNewWeight(Number(e.target.value))}
+
+                    />
+
+                    <input placeholder="Reps.."
+                        onChange={(e) => setNewReps(Number(e.target.value))}
+                    />
+                    <button onClick={() => setIsAddingSet(false)}>cancel</button>
+                </div>
+
+
+            )
+            }
+            <button
+                onClick={() => isAddingSet ? Addset() : setIsAddingSet(true)}>
+                {!isAddingSet ? "Add set" : "Save"}</button>
+            <button
+                onClick={() => isDeletingSet ? setisDeletingSet(false) : setisDeletingSet(true)}
+            > {isDeletingSet ? "Cancel" : "Remove set"}</button>
+
+
 
         </div>
     );
