@@ -1,19 +1,48 @@
 import { ExerciseCard } from '../components/exerciseCard';
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
+import { addDoc, collection, getDocs, doc } from 'firebase/firestore';
+import { db, auth } from '../firebase/firebase';
 import type { Exercises, Workout } from '../types';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navbar } from '../components/navbar';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styles from './editWorkout.module.css';
 
 export const EditWorkout = () => {
 
     const { id } = useParams();
+    const [user] = useAuthState(auth);
+
 
     const [exercises, setExercises] = useState<Exercises[]>([]);
+    const [newName, setNewName] = useState("");
 
-    const dbReference = collection(db, "workouts");
+    const navigate = useNavigate();
+
+    const workoutsRef = collection(db, "workouts");
+
+    const createDoc = async () => {
+        try {
+
+            const docRef = await addDoc(workoutsRef, {
+                name: newName,
+                userId: user?.uid,
+                AutomaticallyGenerated: false,
+                cardOrder: 0,
+                exercises: {}
+            });
+
+            navigate(`/exerciseSelector/${docRef.id}`);
+
+        } catch (err) {
+            console.error(err);
+        }
+
+
+
+
+
+    }
 
     /** 
 
@@ -27,13 +56,18 @@ export const EditWorkout = () => {
     }
 
     const deleteExercise = async () => {
+        try {
 
+            ;
+        } catch (err) {
+            console.error(err)
+        }
     }
     */
 
     const getExercise = async () => {
         try {
-            const snapshot = await getDocs(dbReference);
+            const snapshot = await getDocs(workoutsRef);
 
             const exerciseList: Exercises[] = [];
             if (id != "") {
@@ -42,8 +76,6 @@ export const EditWorkout = () => {
                     if (doc.id == id) {
 
                         const workout = doc.data() as Workout;
-
-
 
                         const exercises = Object.entries(workout.exercises);
 
@@ -69,7 +101,6 @@ export const EditWorkout = () => {
                 exerciseList.sort((a, b) => a.exerciseOrder - b.exerciseOrder);
             }
 
-            // aggiorna lo state una sola volta
             setExercises(exerciseList);
             getExercise();
         } catch (err) {
@@ -85,10 +116,23 @@ export const EditWorkout = () => {
         <>
             <Navbar />
             <div className={styles.actions}>
-                <button className={styles.addButton}>
+                <button
+                    className={styles.addButton}
+                    onClick={() => createDoc()} // DA SISTEMARE, PROBLEMA: MI CREA OGNI VOLTA UN NUOVO DOCUMENTO, INVECE SE PREMO ADD EXERCISE E HO GIA' ESERCIZI DENTRO IO VOGLIO CHE GLI ESERCIZI VENGANO AGGIUNTI, UN IDEA è QUELLA DI PASSARE IL DOC_ID SE CI SONO DEGLI ESERCIZI PRESENTI
+
+                >
                     Add Exercise
                 </button>
             </div>
+            <input
+                placeholder='name...'
+                onChange={(e) => { setNewName(e.target.value) }}
+            />
+            <button
+                onClick={() => { createDoc() }}
+
+            >Submit</button>
+
             {exercises.map((exercise) => (
                 <>
                     <ExerciseCard
@@ -100,9 +144,6 @@ export const EditWorkout = () => {
 
             ))
             }
-
-
-
         </>
     );
 

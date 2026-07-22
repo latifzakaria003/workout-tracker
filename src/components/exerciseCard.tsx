@@ -11,47 +11,54 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
     const [editingSet, setEditingSet] = useState<string | null>(null);
     const [editWeight, setEditWeight] = useState(0);
     const [editReps, setEditReps] = useState(0);
-
     const [newWeight, setNewWeight] = useState(0);
     const [newReps, setNewReps] = useState(0);
 
+    const workoutRef = doc(db, "workouts", exercise.docId);
+
     const Addset = async () => {
-        const workoutRef = doc(db, "workouts", exercise.docId);
-        const maxKey = Object.keys(exercise.sets).length === 0
-            ? 0
-            : Math.max(...Object.keys(exercise.sets).map(Number));
 
-        const newKey = maxKey + 1;
+        try {
+            const maxKey = Object.keys(exercise.sets).length === 0 ? 0 : Math.max(...Object.keys(exercise.sets).map(Number));
 
-        await updateDoc(workoutRef, {
-            [`exercises.${exercise.id}.sets.${newKey}`]: {
-                reps: newReps,
-                weight: newWeight
-            }
-        });
+            const newKey = maxKey + 1;
+
+            await updateDoc(workoutRef, {
+                [`exercises.${exercise.id}.sets.${newKey}`]: {
+                    reps: newReps,
+                    weight: newWeight
+                }
+            });
+        } catch (err) {
+            console.error(err);
+        }
+
         setIsAddingSet(false);
         onUpdate();
     };
     const DeleteSet = async (setId: string) => {
-        const workoutRef = doc(db, "workouts", exercise.docId);
-
-        await updateDoc(workoutRef, {
-            [`exercises.${exercise.id}.sets.${setId}`]: deleteField()
-        });
+        try {
+            await updateDoc(workoutRef, {
+                [`exercises.${exercise.id}.sets.${setId}`]: deleteField()
+            });
+        } catch (err) {
+            console.error(err);
+        }
         setisDeletingSet(false);
         onUpdate();
     }
 
     const EditSet = async (setId: string) => {
-        const workoutRef = doc(db, "workouts", exercise.docId);
-
-        await updateDoc(workoutRef, {
-            [`exercises.${exercise.id}.sets.${setId}`]: {
-                weight: editWeight,
-                reps: editReps
-            }
-        });
-
+        try {
+            await updateDoc(workoutRef, {
+                [`exercises.${exercise.id}.sets.${setId}`]: {
+                    weight: editWeight,
+                    reps: editReps
+                }
+            });
+        } catch (err) {
+            console.error(err);
+        }
         setEditingSet(null);
         onUpdate();
     }
@@ -164,7 +171,6 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
                     <button onClick={() => setIsAddingSet(false)}>cancel</button>
                 </div>
 
-
             )
             }
             <button
@@ -173,8 +179,6 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
             <button
                 onClick={() => isDeletingSet ? setisDeletingSet(false) : setisDeletingSet(true)}
             > {isDeletingSet ? "Cancel" : "Remove set"}</button>
-
-
 
         </div>
     );

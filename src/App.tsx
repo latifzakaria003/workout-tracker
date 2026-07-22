@@ -8,6 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/firebase'
 import { SignUp } from './pages/signUp';
 import { EditWorkout } from './pages/editWorkout';
+import { ExerciseSelector } from './components/exerciseSelector';
 
 
 
@@ -34,6 +35,8 @@ function App() {
           <Route path="/login" element={!user ? <Login /> : <Navigate to='/' />}> </Route>
           <Route path="/signUp" element={<SignUp />}> </Route>
           <Route path="/editWorkout/:id?" element={user ? <EditWorkout /> : <Navigate to='/login' />}> </Route>
+          <Route path="/exerciseSelector/:documentId?" element={user ? <ExerciseSelector /> : <Navigate to='/login' />}> </Route>
+
 
 
           <Route path="*" element={<h1>Page not Found </h1>}> </Route>

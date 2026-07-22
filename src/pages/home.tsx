@@ -48,6 +48,7 @@ export const Home = () => {
                 });
             });
             setWorkouts(workoutList);
+            getWorkout();
         } catch (err) {
             console.error(err);
         }
@@ -88,7 +89,6 @@ export const Home = () => {
                     <>
                         <br></br>
                         <WorkoutCard
-                            key={workout.id}
                             id={workout.id}
                             name={workout.name}
                             exerciseCount={workout.exerciseCount}
