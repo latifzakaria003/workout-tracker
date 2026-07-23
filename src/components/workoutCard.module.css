@@ -1,4 +1,6 @@
 .card {
+    position: relative;
+
     width: 380px;
     padding: 18px 28px;
     border-radius: 20px;
@@ -22,7 +24,6 @@
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
-
 .title {
     font-size: 32px;
     font-weight: 700;
@@ -31,16 +32,12 @@
     text-align: center;
 }
 
-
-/* contenitore statistiche */
 .stats {
     display: flex;
     justify-content: center;
     gap: 80px;
 }
 
-
-/* singola statistica */
 .stat {
     display: flex;
     flex-direction: column;
@@ -48,15 +45,44 @@
     gap: 8px;
 }
 
-
 .label {
     font-size: 15px;
     color: #a0a0a0;
 }
 
-
 .value {
     font-size: 28px;
     font-weight: 700;
     color: #4ade80;
+}
+
+/* Pulsante elimina */
+.deleteButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    border-radius: 50%;
+
+    background-color: #e53935;
+    color: white;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.deleteButton:hover {
+    background-color: #c62828;
+    transform: scale(1.1);
 }

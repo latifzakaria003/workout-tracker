@@ -1,17 +1,46 @@
 import styles from './workoutCard.module.css';
 import type { WorkoutCardProps } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../firebase/firebase';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { useEffect } from 'react';
 
-export const WorkoutCard = ({ id, name, exerciseCount, volume }: WorkoutCardProps) => {
+export const WorkoutCard = ({ id, name, exerciseCount, volume, onUpdate }: WorkoutCardProps) => {
 
     const navigate = useNavigate();
 
-    return (
-        <div className={styles.card} key={id} onClick={() => navigate(`/editWorkout/${id}`)}>
+    const workoutRef = doc(db, "workouts", id);
 
-            <h2 className={styles.title}>
-                {name}
-            </h2>
+    const deleteWorkout = async () => {
+        try {
+            await deleteDoc(workoutRef);
+
+        } catch (err) {
+            console.error(err);
+        }
+
+    }
+    useEffect(() => {
+        onUpdate()
+    }, []);
+
+
+    return (
+        <div
+            className={styles.card}
+            onClick={() => navigate(`/editWorkout/${id}`)}
+        >
+            <button
+                className={styles.deleteButton}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    deleteWorkout();
+                }}
+            >
+                ✕
+            </button>
+
+            <h2 className={styles.title}>{name}</h2>
 
             <div className={styles.stats}>
 

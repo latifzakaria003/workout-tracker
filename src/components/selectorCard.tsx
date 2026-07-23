@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './selectorCard.module.css';
 
 
-export const SelectorCard = ({ key, exercise }: SelectorCardProps) => {
+export const SelectorCard = ({ exercise }: SelectorCardProps) => {
 
 
     const navigate = useNavigate();
@@ -38,7 +38,7 @@ export const SelectorCard = ({ key, exercise }: SelectorCardProps) => {
                     exerciseOrder: newOrder,
                     exerciseSourceId: exercise.exerciseSourceId,
                     imageUrl: exercise.imageUrl,
-                    muscleGroup: exercise.muscleGroup == " " ? exercise.category : exercise.muscleGroup,
+                    muscleGroup: !exercise.muscleGroup ? exercise.category : exercise.muscleGroup,
                     sets: {},
                     rest: 0
                 }

@@ -87,9 +87,7 @@ export const ExerciseSelector = () => {
                     <div className={styles.exerciseList}>
                         {filteredExercises.map((exercise) => (
                             <SelectorCard
-                                key={exercise.id}
                                 exercise={exercise}
-
                             />
                         ))}
                     </div>}

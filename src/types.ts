@@ -6,6 +6,8 @@ export interface WorkoutCardProps {
     name: string;
     exerciseCount: number;
     volume: number;
+    onUpdate: () => void;
+
 }
 
 export interface Sets {
@@ -47,6 +49,5 @@ export interface WgerExercise {
 }
 
 export interface SelectorCardProps {
-    key: number,
     exercise: WgerExercise
 }

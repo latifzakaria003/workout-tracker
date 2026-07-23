@@ -44,7 +44,8 @@ export const Home = () => {
                     id: doc.id,
                     name: workout.name,
                     exerciseCount: exercises.length,
-                    volume: volume
+                    volume: volume,
+                    onUpdate: () => { }
                 });
             });
             setWorkouts(workoutList);
@@ -93,6 +94,8 @@ export const Home = () => {
                             name={workout.name}
                             exerciseCount={workout.exerciseCount}
                             volume={workout.volume}
+                            onUpdate={getWorkout}
+
                         />
                     </>
                 ))}

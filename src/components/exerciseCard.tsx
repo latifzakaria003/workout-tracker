@@ -36,6 +36,7 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
         setIsAddingSet(false);
         onUpdate();
     };
+
     const DeleteSet = async (setId: string) => {
         try {
             await updateDoc(workoutRef, {
@@ -63,6 +64,19 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
         onUpdate();
     }
 
+    const DeleteExercise = async () => {
+
+        try {
+            await updateDoc(workoutRef, {
+                [`exercises.${exercise.id}`]: deleteField()
+            });
+
+        } catch (err) {
+            console.error(err);
+        }
+
+    }
+
     useEffect(() => {
         onUpdate();
     }, []);
@@ -71,7 +85,10 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
 
     return (
         <div className={styles.card} key={exercise.exerciseOrder}>
-
+            <button
+                className={styles.deleteButton}
+                onClick={() => { DeleteExercise() }}
+            >X</button>
             <h1 className={styles.title}>
                 {exercise.exerciseName}
             </h1>
@@ -180,6 +197,8 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
                 onClick={() => isDeletingSet ? setisDeletingSet(false) : setisDeletingSet(true)}
             > {isDeletingSet ? "Cancel" : "Remove set"}</button>
 
-        </div>
+
+
+        </div >
     );
 };

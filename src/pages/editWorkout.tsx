@@ -1,6 +1,6 @@
 import { ExerciseCard } from '../components/exerciseCard';
 import { useEffect, useState } from 'react';
-import { addDoc, collection, getDocs, doc } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db, auth } from '../firebase/firebase';
 import type { Exercises, Workout } from '../types';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -23,17 +23,19 @@ export const EditWorkout = () => {
 
     const createDoc = async () => {
         try {
+            if (!id) {
+                const docRef = await addDoc(workoutsRef, {
+                    name: newName,
+                    userId: user?.uid,
+                    AutomaticallyGenerated: false,
+                    cardOrder: 0,
+                    exercises: {}
+                });
 
-            const docRef = await addDoc(workoutsRef, {
-                name: newName,
-                userId: user?.uid,
-                AutomaticallyGenerated: false,
-                cardOrder: 0,
-                exercises: {}
-            });
-
-            navigate(`/exerciseSelector/${docRef.id}`);
-
+                navigate(`/exerciseSelector/${docRef.id}`);
+            } else {
+                navigate(`/exerciseSelector/${id}`);
+            }
         } catch (err) {
             console.error(err);
         }
@@ -70,7 +72,7 @@ export const EditWorkout = () => {
             const snapshot = await getDocs(workoutsRef);
 
             const exerciseList: Exercises[] = [];
-            if (id != "") {
+            if (id) {
 
                 snapshot.forEach((doc) => {
                     if (doc.id == id) {
@@ -115,23 +117,26 @@ export const EditWorkout = () => {
     return (
         <>
             <Navbar />
+            {!id &&
+                <div>
+                    <p>Select a name to continue..</p>
+                    <input
+                        placeholder='name...'
+                        onChange={(e) => { setNewName(e.target.value) }}
+                    />
+                </div>
+            }
             <div className={styles.actions}>
                 <button
                     className={styles.addButton}
+                    disabled={newName.trim() === "" && !id}
                     onClick={() => createDoc()} // DA SISTEMARE, PROBLEMA: MI CREA OGNI VOLTA UN NUOVO DOCUMENTO, INVECE SE PREMO ADD EXERCISE E HO GIA' ESERCIZI DENTRO IO VOGLIO CHE GLI ESERCIZI VENGANO AGGIUNTI, UN IDEA è QUELLA DI PASSARE IL DOC_ID SE CI SONO DEGLI ESERCIZI PRESENTI
 
                 >
                     Add Exercise
                 </button>
             </div>
-            <input
-                placeholder='name...'
-                onChange={(e) => { setNewName(e.target.value) }}
-            />
-            <button
-                onClick={() => { createDoc() }}
 
-            >Submit</button>
 
             {exercises.map((exercise) => (
                 <>
