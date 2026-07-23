@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
-import type { WgerExercise } from '../types';
+import type { ExerciseSelectorProps, WgerExercise } from '../types';
 import { SelectorCard } from './selectorCard';
 import styles from './exerciseSelector.module.css';
-import { useParams } from 'react-router-dom';
 
-export const ExerciseSelector = () => {
-
-    const { documentId } = useParams();
+export const ExerciseSelector = ({ documentId, onClose }: ExerciseSelectorProps) => {
 
     const [exercises, setExercises] = useState<WgerExercise[]>([])
     const [search, setSearch] = useState("")
@@ -55,7 +52,6 @@ export const ExerciseSelector = () => {
 
     useEffect(() => {
         getExercises();
-
     }, [])
 
 
@@ -63,38 +59,34 @@ export const ExerciseSelector = () => {
 
         <>
             <div className={styles.container}>
+                <div className={styles.modal}>
+                    <input
+                        className={styles.searchInput}
+                        type="text"
+                        placeholder="Search exercise..."
+                        value={search}
+                        onChange={(e) => { setSearch(e.target.value); setIsClosed(false); }}
+                    />
 
-                <input
-                    className={styles.searchInput}
-                    type="text"
-                    placeholder="Search exercise..."
-                    value={search}
-                    onChange={(e) => { setSearch(e.target.value); setIsClosed(false); }}
-                />
-                <button
-                    onClick={() => setIsClosed(true)}
-                >
-                    Close
-                </button>
+                    <button onClick={() => { setIsClosed(true); onClose() }}>
+                        Close
+                    </button>
 
-                {loading && (
-                    <div className={styles.loader}>
-                        Loading exercises...
-                    </div>
-                )}
+                    {loading && (
+                        <div className={styles.loader}>
+                            Loading exercises...
+                        </div>
+                    )}
 
-                {!isClosed &&
-                    <div className={styles.exerciseList}>
-                        {filteredExercises.map((exercise) => (
-                            <SelectorCard
-                                exercise={exercise}
-                            />
-                        ))}
-                    </div>}
-
+                    {!isClosed && (
+                        <div className={styles.exerciseList}>
+                            {filteredExercises.map((exercise) => (
+                                <SelectorCard exercise={exercise} />
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
-
-
         </>
     );
 }

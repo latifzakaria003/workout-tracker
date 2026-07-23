@@ -1,17 +1,17 @@
 .card {
+    position: relative;
+
     display: flex;
     align-items: center;
 
     gap: 12px;
 
     width: 100%;
-
     box-sizing: border-box;
 
     background-color: #292929;
 
     border-radius: 10px;
-
     padding: 10px;
 
     cursor: pointer;
@@ -19,10 +19,11 @@
     transition: 0.2s;
 }
 
-
 .card:hover {
     background-color: #383838;
 }
+
+
 
 
 .imageContainer {
@@ -103,4 +104,45 @@
     font-size: 12px;
 
     text-align: center;
+}
+
+.toast {
+    position: absolute;
+
+    top: 20px;
+    right: 10px;
+
+    background-color: #22c55e;
+    color: white;
+
+    padding: 8px 15px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    z-index: 10;
+
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+    animation: toastAnimation 0.5s ease-out forwards;
+}
+
+
+@keyframes toastAnimation {
+    0% {
+        opacity: 0;
+        transform: translateY(3px);
+    }
+
+    30% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
 }

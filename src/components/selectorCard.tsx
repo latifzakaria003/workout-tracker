@@ -1,12 +1,14 @@
 import type { SelectorCardProps } from "../types";
-import { db, auth } from '../firebase/firebase';
+import { db } from '../firebase/firebase';
 import { collection, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import styles from './selectorCard.module.css';
+import { useState } from "react";
 
 
 export const SelectorCard = ({ exercise }: SelectorCardProps) => {
 
+    const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -52,7 +54,16 @@ export const SelectorCard = ({ exercise }: SelectorCardProps) => {
     }
 
     return (
-        <div className={styles.card} onClick={() => { createExercise() }}>
+        <div className={styles.card} onClick={() => {
+            createExercise(); setMessage("Exercise Added"); setTimeout(() => {
+                setMessage("");
+            }, 500);
+        }}>
+            {message && (
+                <div className={styles.toast}>
+                    {message}
+                </div>
+            )}
 
             <div className={styles.imageContainer}>
                 {exercise.imageUrl ? (

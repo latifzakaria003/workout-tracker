@@ -1,23 +1,22 @@
 import { ExerciseCard } from '../components/exerciseCard';
+import { ExerciseSelector } from '../components/exerciseSelector';
 import { useEffect, useState } from 'react';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db, auth } from '../firebase/firebase';
 import type { Exercises, Workout } from '../types';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navbar } from '../components/navbar';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styles from './editWorkout.module.css';
 
 export const EditWorkout = () => {
 
     const { id } = useParams();
     const [user] = useAuthState(auth);
-
-
+    const [docId, setDocId] = useState("");
     const [exercises, setExercises] = useState<Exercises[]>([]);
     const [newName, setNewName] = useState("");
-
-    const navigate = useNavigate();
+    const [isSearching, setIsSearching] = useState(false);
 
     const workoutsRef = collection(db, "workouts");
 
@@ -32,18 +31,14 @@ export const EditWorkout = () => {
                     exercises: {}
                 });
 
-                navigate(`/exerciseSelector/${docRef.id}`);
+                setDocId(docRef.id);
             } else {
-                navigate(`/exerciseSelector/${id}`);
+                setDocId(id);
             }
+            setIsSearching(true);
         } catch (err) {
             console.error(err);
         }
-
-
-
-
-
     }
 
     /** 
@@ -117,6 +112,13 @@ export const EditWorkout = () => {
     return (
         <>
             <Navbar />
+            {isSearching &&
+                <ExerciseSelector
+                    documentId={docId}
+                    onClose={() => setIsSearching(false)}
+                />
+            }
+
             {!id &&
                 <div>
                     <p>Select a name to continue..</p>
@@ -130,7 +132,7 @@ export const EditWorkout = () => {
                 <button
                     className={styles.addButton}
                     disabled={newName.trim() === "" && !id}
-                    onClick={() => createDoc()} // DA SISTEMARE, PROBLEMA: MI CREA OGNI VOLTA UN NUOVO DOCUMENTO, INVECE SE PREMO ADD EXERCISE E HO GIA' ESERCIZI DENTRO IO VOGLIO CHE GLI ESERCIZI VENGANO AGGIUNTI, UN IDEA è QUELLA DI PASSARE IL DOC_ID SE CI SONO DEGLI ESERCIZI PRESENTI
+                    onClick={() => createDoc()}
 
                 >
                     Add Exercise

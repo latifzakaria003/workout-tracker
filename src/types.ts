@@ -51,3 +51,8 @@ export interface WgerExercise {
 export interface SelectorCardProps {
     exercise: WgerExercise
 }
+
+export interface ExerciseSelectorProps {
+    documentId: string;
+    onClose: () => void;
+}
