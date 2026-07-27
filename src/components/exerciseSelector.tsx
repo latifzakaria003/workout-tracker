@@ -5,25 +5,32 @@ import styles from './exerciseSelector.module.css';
 
 export const ExerciseSelector = ({ documentId, onClose }: ExerciseSelectorProps) => {
 
+
+    // aggiungere filtri
     const [exercises, setExercises] = useState<WgerExercise[]>([])
     const [search, setSearch] = useState("")
     const [isClosed, setIsClosed] = useState(false);
     const [loading, setLoading] = useState(true);
 
+
+
     const getExercises = async () => {
+        if (exercises.length > 0) {
+            setLoading(false);
+            return;
+        }
+
         try {
+
             const response = await fetch(
                 "https://wger.de/api/v2/exerciseinfo/?limit=852"
             );
 
+
             const data = await response.json();
 
-
             setExercises(data.results.map((exercise: any) => {
-                const translation = exercise.translations.find(
-                    (t: any) => t.language === 2
-                );
-
+                const translation = exercise.translations.find((t: any) => t.language === 2);
                 return {
                     docId: documentId,
                     exerciseSourceId: exercise.id,
@@ -33,7 +40,7 @@ export const ExerciseSelector = ({ documentId, onClose }: ExerciseSelectorProps)
                     muscleGroup: exercise.muscles[0]?.name_en ?? "",
                     equipment: exercise.equipment.map((e: any) => e.name)
                 };
-            }))
+            }));
 
         } catch (err) {
             console.error(err);
@@ -48,7 +55,6 @@ export const ExerciseSelector = ({ documentId, onClose }: ExerciseSelectorProps)
                 .toLowerCase()
                 .includes(search.toLowerCase())
         ).slice(0, 10);
-
 
     useEffect(() => {
         getExercises();
@@ -81,7 +87,7 @@ export const ExerciseSelector = ({ documentId, onClose }: ExerciseSelectorProps)
                     {!isClosed && (
                         <div className={styles.exerciseList}>
                             {filteredExercises.map((exercise) => (
-                                <SelectorCard exercise={exercise} />
+                                <SelectorCard key={exercise.exerciseSourceId} exercise={exercise} />
                             ))}
                         </div>
                     )}

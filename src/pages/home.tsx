@@ -8,6 +8,8 @@ import { WorkoutCard } from '../components/workoutCard';
 import { useNavigate } from 'react-router-dom';
 
 
+
+
 export const Home = () => {
 
     const navigate = useNavigate();
@@ -31,9 +33,8 @@ export const Home = () => {
                 exercises.forEach((exercise) => {
 
                     Object.values(exercise.sets).forEach((set) => {
-
-                        volume += set.weight * set.reps;
-
+                        const weight = (set.weight == 0) ? 1 : set.weight;
+                        volume += weight * set.reps;
                     });
 
                 });
@@ -77,7 +78,7 @@ export const Home = () => {
 
                     <button
                         className={styles.workoutButton}
-                        onClick={() => navigate("/generateWorkout")}
+                        onClick={() => navigate("/workoutGeneration")}
                     >
                         Generate Workout
                     </button>

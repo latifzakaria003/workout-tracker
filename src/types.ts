@@ -44,8 +44,8 @@ export interface WgerExercise {
     imageUrl: string;
     category: string;   // legs, arms, chest, back, ...
     muscleGroup: string;
+    secondaryMuscleGroup: string[];
     equipment: string[];
-
 }
 
 export interface SelectorCardProps {
@@ -55,4 +55,47 @@ export interface SelectorCardProps {
 export interface ExerciseSelectorProps {
     documentId: string;
     onClose: () => void;
+}
+
+export interface ExerciseGenerationProps {
+    goal: string;
+    sessionsPerWeek: number;
+    sessionsDuration: number;
+    equipment: string[];
+}
+
+export interface GoalSettings {
+    sets: number[];
+    reps: number[];
+    rest: number;
+    cardioPercentage: number;
+}
+
+export interface GoalParams {
+    sets: [number, number];
+    reps: [number, number];
+    rest: number;          // secondi
+    cardioPercentage: number;
+    timePerRep: number;    // secondi
+}
+
+export interface WorkoutSession {
+    day: string;
+    sets: number;
+    reps: number;
+    rest: number;
+    exercises: WgerExercise[];
+}
+
+export interface ConstraintProps {
+    minNumOfExercises: number;
+    PriorityMuscles: string[];
+    secondaryMuscles: string[];
+}
+
+export type Goal = "strength" | "hypertrophy" | "endurance" | "weight loss" | "general fitness";
+
+export interface WorkoutPlan {
+    workout: WgerExercise[],
+    sets: number;
 }

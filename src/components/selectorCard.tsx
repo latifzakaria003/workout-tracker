@@ -57,7 +57,7 @@ export const SelectorCard = ({ exercise }: SelectorCardProps) => {
         <div className={styles.card} onClick={() => {
             createExercise(); setMessage("Exercise Added"); setTimeout(() => {
                 setMessage("");
-            }, 500);
+            }, 900);
         }}>
             {message && (
                 <div className={styles.toast}>
