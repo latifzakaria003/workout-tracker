@@ -7,9 +7,6 @@ import type { Workout, WorkoutCardProps } from '../types'
 import { WorkoutCard } from '../components/workoutCard';
 import { useNavigate } from 'react-router-dom';
 
-
-
-
 export const Home = () => {
 
     const navigate = useNavigate();
@@ -44,9 +41,11 @@ export const Home = () => {
                     name: workout.name,
                     exerciseCount: exercises.length,
                     volume: volume,
+                    cardOrder: workout.cardOrder,
                     onUpdate: () => { }
                 });
             });
+            workoutList.sort((a, b) => a.cardOrder - b.cardOrder);
             setWorkouts(workoutList);
             getWorkout();
         } catch (err) {
@@ -58,13 +57,12 @@ export const Home = () => {
         getWorkout();
     }, []);
 
-
-
-
     return (
 
         <>
             <Navbar />
+
+            <button>Check past sessions</button>
             <div className={styles.container}>
                 <h1 className={styles.title}>Home</h1>
 
@@ -85,11 +83,12 @@ export const Home = () => {
                 </div>
             </div>
             <div>
-                {workouts.map((workout) => (
+                {workouts.map((workout, index) => (
                     <>
                         <br></br>
                         <WorkoutCard
                             id={workout.id}
+                            cardOrder={index}
                             name={workout.name}
                             exerciseCount={workout.exerciseCount}
                             volume={workout.volume}

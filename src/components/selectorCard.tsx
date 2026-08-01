@@ -1,4 +1,4 @@
-import type { SelectorCardProps } from "../types";
+import type { WgerExercise, Workout } from "../types";
 import { db } from '../firebase/firebase';
 import { collection, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
@@ -6,12 +6,11 @@ import styles from './selectorCard.module.css';
 import { useState } from "react";
 
 
-export const SelectorCard = ({ exercise }: SelectorCardProps) => {
+export const SelectorCard = ({ exercise }: { exercise: WgerExercise }) => {
 
     const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
-
 
     const createExercise = async () => {
         try {
@@ -21,18 +20,34 @@ export const SelectorCard = ({ exercise }: SelectorCardProps) => {
 
             if (!workoutSnap.exists()) return;
 
-            const workout = workoutSnap.data();
+            const workout = workoutSnap.data() as Workout;
 
             const values = Object.values(workout.exercises ?? {});
 
             const maxOrder =
                 values.length === 0
                     ? -1
-                    : Math.max(...values.map((e: any) => e.exerciseOrder));
+                    : Math.max(...values.map((e) => e.exerciseOrder));
 
             const newOrder = maxOrder + 1;
 
             const exerciseId = doc(collection(db, "workouts")).id;
+            let muscle;
+            if (exercise.muscleGroup.length > 1 && Array.isArray(exercise.muscleGroup)) {
+                for (let i = 0; i < exercise.muscleGroup.length; i++) {
+                    if (exercise.muscleGroup[i].name_en) {
+                        muscle = exercise.muscleGroup[i].name_en;
+                        console.log("name_en: ", exercise.muscleGroup[i].name_en)
+                        break;
+                    }
+                }
+            }
+            console.log("pre: ", muscle);
+            if (!muscle)
+                muscle = exercise.category;
+
+            console.log("final: ", muscle);
+
             await updateDoc(exerciseRef, {
 
                 [`exercises.${exerciseId}`]: {
@@ -40,7 +55,7 @@ export const SelectorCard = ({ exercise }: SelectorCardProps) => {
                     exerciseOrder: newOrder,
                     exerciseSourceId: exercise.exerciseSourceId,
                     imageUrl: exercise.imageUrl,
-                    muscleGroup: !exercise.muscleGroup ? exercise.category : exercise.muscleGroup,
+                    muscleGroup: muscle,
                     sets: {},
                     rest: 0
                 }
@@ -87,7 +102,7 @@ export const SelectorCard = ({ exercise }: SelectorCardProps) => {
                 </h3>
 
                 <span className={styles.muscle}>
-                    {exercise.muscleGroup === "" ? exercise.category : exercise.muscleGroup}
+                    {(typeof exercise.muscleGroup === "string") ? exercise.muscleGroup : "no muscle"}
                 </span>
 
             </div>

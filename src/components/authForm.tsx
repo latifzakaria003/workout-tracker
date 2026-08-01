@@ -5,7 +5,6 @@ import { useState } from 'react';
 import type { AuthFormProps } from '../types';
 import styles from './authform.module.css'
 
-
 export const AuthForm = ({ mode }: AuthFormProps) => {
 
     const islogin = (mode === "login");
@@ -15,10 +14,13 @@ export const AuthForm = ({ mode }: AuthFormProps) => {
     const navigate = useNavigate();
 
     const signInWithGoogle = async () => {
-        const result = await signInWithPopup(auth, provider); // result contains the info of the account used to sing in 
-        console.log("account name: " + result.user.displayName);
+        try {
+            await signInWithPopup(auth, provider);
 
-        navigate("/");
+            navigate("/");
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     const signIn = async () => {
@@ -31,12 +33,11 @@ export const AuthForm = ({ mode }: AuthFormProps) => {
 
     const signUp = async () => {
         try {
-            const userCredential = await createUserWithEmailAndPassword(
+            await createUserWithEmailAndPassword(
                 auth,
                 email,
                 password
             );
-            console.log("account name: " + userCredential.user.displayName);
             navigate("/");
         } catch (err) {
             console.log(err);

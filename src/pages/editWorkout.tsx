@@ -3,14 +3,30 @@ import { ExerciseSelector } from '../components/exerciseSelector';
 import { useEffect, useState } from 'react';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db, auth } from '../firebase/firebase';
-import type { Exercises, Workout } from '../types';
+import type { WorkoutSession, Exercises, Workout } from '../types';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navbar } from '../components/navbar';
 import { useParams } from 'react-router-dom';
 import styles from './editWorkout.module.css';
 
+
+/*
+IDEA PRESA DA HEVY, le exercise card dovrebbero avere solo il riposo e poi quando ci clicco fornire le informazioni sull'esercizio (usando wger) 
+ci dovrebbe anche essere un pulsante "START WORKOUT" che fa partire il workout come in hevy. 
+*/
+
+
+
 export const EditWorkout = () => {
 
+    const [session, setSession] = useState<WorkoutSession>({
+        started: false,
+        completedSets: {},
+        remainingRest: null,
+        activeSetId: null,
+        activeExerciseId: null,
+        finished: false,
+    });
     const { id } = useParams();
     const [user] = useAuthState(auth);
     const [docId, setDocId] = useState("");
@@ -23,6 +39,7 @@ export const EditWorkout = () => {
     const createDoc = async () => {
         try {
             if (!id) {
+                // we are creating a new workout
                 const docRef = await addDoc(workoutsRef, {
                     name: newName,
                     userId: user?.uid,
@@ -30,9 +47,9 @@ export const EditWorkout = () => {
                     cardOrder: 0,
                     exercises: {}
                 });
-
                 setDocId(docRef.id);
             } else {
+                // we are editing an existing workout
                 setDocId(id);
             }
             setIsSearching(true);
@@ -41,43 +58,20 @@ export const EditWorkout = () => {
         }
     }
 
-    /** 
-
-    const addExercise = async () => {
-        try {
-
-            ;
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    const deleteExercise = async () => {
-        try {
-
-            ;
-        } catch (err) {
-            console.error(err)
-        }
-    }
-    */
-
     const getExercise = async () => {
         try {
             const snapshot = await getDocs(workoutsRef);
 
             const exerciseList: Exercises[] = [];
             if (id) {
-
                 snapshot.forEach((doc) => {
                     if (doc.id == id) {
-
+                        // we found the workout
                         const workout = doc.data() as Workout;
 
-                        const exercises = Object.entries(workout.exercises);
+                        const ex = Object.entries(workout.exercises);
 
-
-                        exercises.forEach(([exerciseId, exercise]) => {
+                        ex.forEach(([exerciseId, exercise]) => {
 
                             const sets = workout.exercises[exerciseId].sets;
 
@@ -105,13 +99,99 @@ export const EditWorkout = () => {
         }
     }
 
+    const toggleSet = (exerciseId: string, setIndex: string, rest: number) => {
+
+        const setId = `${exerciseId}-${setIndex}`;
+        setSession(prev => {
+
+            if (prev.completedSets[setId]) {
+                const { [setId]: _, ...completedSets } = prev.completedSets;
+
+                return {
+                    ...prev,
+                    completedSets,
+                    activeSetId: null,
+                    activeExerciseId: null,
+                    remainingRest: null
+                };
+            }
+
+            return {
+                ...prev,
+                completedSets: {
+                    ...prev.completedSets,
+                    [setId]: true
+                },
+                activeSetId: setId,
+                activeExerciseId: exerciseId,
+                remainingRest: rest
+            };
+        });
+    };
+
+
+    const endWorkout = async () => {
+
+        try {
+            setSession(prev => { return { ...prev, finished: true } });
+            while (!session.finished) { ; }
+
+
+
+
+
+        } catch (err) {
+            console.error(err);
+        }
+
+
+
+    }
+
+
+
     useEffect(() => {
         getExercise();
     }, []);
+    useEffect(() => {
+
+        if (session.remainingRest == null)
+            return;
+
+        if (session.remainingRest <= 0)
+            return;
+
+        const interval = setInterval(() => {
+
+            setSession(prev => ({
+
+                ...prev,
+
+                remainingRest:
+                    prev.remainingRest == null
+                        ? null
+                        : prev.remainingRest - 1
+
+            }));
+
+        }, 1000);
+
+        return () => clearInterval(interval);
+
+    }, [session.remainingRest]);
+    useEffect(() => {
+
+        if (session.remainingRest !== 0)
+            return;
+
+        console.log("REST FINITO");
+
+    }, [session.remainingRest]);
 
     return (
         <>
             <Navbar />
+
             {isSearching &&
                 <ExerciseSelector
                     documentId={docId}
@@ -128,7 +208,28 @@ export const EditWorkout = () => {
                     />
                 </div>
             }
+
+            {id && <div className={styles.action}>
+                <button
+                    className={styles.addButton}
+                    onClick={() => {
+
+                        setSession({
+                            started: true,
+                            completedSets: {},
+                            remainingRest: null as number | null,
+                            activeSetId: null as string | null,
+                            activeExerciseId: null as string | null,
+                            finished: false,
+                        })
+                    }}
+
+
+
+                > {!session?.started ? "Start Workout" : "End Workout"}</button>
+            </div >}
             <div className={styles.actions}>
+
                 <button
                     className={styles.addButton}
                     disabled={newName.trim() === "" && !id}
@@ -139,17 +240,19 @@ export const EditWorkout = () => {
                 </button>
             </div>
 
+            {
+                exercises.map((exercise) => (
+                    <>
+                        <ExerciseCard
+                            key={exercise.id}
+                            exercise={exercise}
+                            session={session}
+                            onUpdate={getExercise}
+                            onToggleSet={toggleSet}
+                        />
+                    </>
 
-            {exercises.map((exercise) => (
-                <>
-                    <ExerciseCard
-                        key={exercise.id}
-                        exercise={exercise}
-                        onUpdate={getExercise}
-                    />
-                </>
-
-            ))
+                ))
             }
         </>
     );

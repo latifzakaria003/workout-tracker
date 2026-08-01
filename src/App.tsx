@@ -9,12 +9,13 @@ import { auth } from './firebase/firebase'
 import { SignUp } from './pages/signUp';
 import { EditWorkout } from './pages/editWorkout';
 import { WorkoutGeneration } from './pages/workoutGeneration';
+import type { User } from 'firebase/auth'
 
 
 
 function App() {
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
 

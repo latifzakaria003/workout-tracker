@@ -4,7 +4,7 @@ import { doc, updateDoc, deleteField } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { useEffect, useState } from 'react';
 
-export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
+export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: ExerciseCardProps) => {
 
     const [isAddingSet, setIsAddingSet] = useState(false);
     const [isDeletingSet, setisDeletingSet] = useState(false);
@@ -14,10 +14,10 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
     const [newWeight, setNewWeight] = useState(0);
     const [newReps, setNewReps] = useState(0);
 
+
     const workoutRef = doc(db, "workouts", exercise.docId);
 
     const Addset = async () => {
-
         try {
             const maxKey = Object.keys(exercise.sets).length === 0 ? 0 : Math.max(...Object.keys(exercise.sets).map(Number));
 
@@ -32,7 +32,6 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
         } catch (err) {
             console.error(err);
         }
-
         setIsAddingSet(false);
         onUpdate();
     };
@@ -65,7 +64,6 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
     }
 
     const DeleteExercise = async () => {
-
         try {
             await updateDoc(workoutRef, {
                 [`exercises.${exercise.id}`]: deleteField()
@@ -74,14 +72,11 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
         } catch (err) {
             console.error(err);
         }
-
     }
 
     useEffect(() => {
         onUpdate();
     }, []);
-
-
 
     return (
         <div className={styles.card} key={exercise.exerciseOrder}>
@@ -93,23 +88,30 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
                 {exercise.exerciseName}
             </h1>
 
-            <img
+            {exercise.imageUrl ? <img
                 className={styles.image}
                 src={exercise.imageUrl}
                 alt="image"
-            />
+            /> :
+                <div className={styles.noImageEmoji}>
+                    🏋️
+                </div>
+            }
 
             <div className={styles.info} key={exercise.id}>
-                <p>ID: {exercise.exerciseSourceId}</p>
-                <p>Muscle: {exercise.muscleGroup}</p>
-                <p>Rest: {exercise.rest}min</p>
+                <p>
+                    Rest: {`${Math.floor(exercise.rest / 60)
+                        .toString()
+                        .padStart(2, "0")}:${(exercise.rest % 60)
+                            .toString()
+                            .padStart(2, "0")}`}
+                </p>
             </div>
-
 
             <div className={styles.setsContainer}>
                 {Object.entries(exercise.sets).map(([setId, set], index) => (
                     <div
-                        className={styles.set}
+                        className={session.completedSets[`${exercise.id}-${setId}`] ? styles.completedSet : styles.set}
                         key={index}
                     >
 
@@ -161,6 +163,10 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
                                 >
                                     {set.reps} reps
                                 </span>
+                                {session?.started && <button
+                                    onClick={() => onToggleSet(exercise.id, setId, exercise.rest)}
+                                    style={{ backgroundColor: "green" }}
+                                > ✓</button>}
                             </>
                         )}
                         {isDeletingSet &&
@@ -196,8 +202,6 @@ export const ExerciseCard = ({ exercise, onUpdate }: ExerciseCardProps) => {
             <button
                 onClick={() => isDeletingSet ? setisDeletingSet(false) : setisDeletingSet(true)}
             > {isDeletingSet ? "Cancel" : "Remove set"}</button>
-
-
 
         </div >
     );

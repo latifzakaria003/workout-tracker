@@ -14,14 +14,12 @@ export const WorkoutCard = ({ id, name, exerciseCount, volume, onUpdate }: Worko
     const deleteWorkout = async () => {
         try {
             await deleteDoc(workoutRef);
-
         } catch (err) {
             console.error(err);
         }
-
     }
     useEffect(() => {
-        onUpdate()
+        onUpdate();
     }, []);
 
 

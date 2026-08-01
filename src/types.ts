@@ -6,6 +6,7 @@ export interface WorkoutCardProps {
     name: string;
     exerciseCount: number;
     volume: number;
+    cardOrder: number;
     onUpdate: () => void;
 
 }
@@ -16,13 +17,13 @@ export interface Sets {
 }
 
 export interface Exercises {
-    docId: string;
-    id: string;
+    docId: string;  // id of the document
+    id: string; // id of the exercise
     exerciseName: string;
     exerciseOrder: number;
     exerciseSourceId: number;
     imageUrl: string;
-    muscleGroup: string;
+    muscleGroup: string | MuscleGroup[];
     rest: number;
     sets: Record<string, Sets>;
 };
@@ -30,11 +31,14 @@ export interface Exercises {
 export interface Workout {
     name: string;
     exercises: Record<string, Exercises>;
+    cardOrder: number;
 };
 
 export interface ExerciseCardProps {
     exercise: Exercises;
+    session: WorkoutSession;
     onUpdate: () => void;
+    onToggleSet: (id: string, setId: string, rest: number,) => void;
 }
 
 export interface WgerExercise {
@@ -43,18 +47,53 @@ export interface WgerExercise {
     name: string;
     imageUrl: string;
     category: string;   // legs, arms, chest, back, ...
-    muscleGroup: string;
+    muscleGroup: string | MuscleGroup[];
     secondaryMuscleGroup: string[];
     equipment: string[];
 }
 
-export interface SelectorCardProps {
-    exercise: WgerExercise
+interface MuscleGroup {
+    name_en: string;
 }
 
 export interface ExerciseSelectorProps {
     documentId: string;
     onClose: () => void;
+}
+
+export interface WgerApiResponse {
+    results: WgerExerciseApi[];
+}
+
+interface WgerExerciseApi {
+    id: number;
+    translations: WgerTranslation[];
+    images: {
+        image: string;
+    }[];
+    category: {
+        name: string;
+    };
+    muscles: {
+        name_en: string;
+    }[];
+    muscles_secondary: {
+        name_en: string
+    }[];
+    equipment: WgerEquipment[];
+}
+
+interface WgerTranslation {
+    language: number;
+    name: string;
+}
+export interface WgerEquipment {
+    name: string
+}
+
+export interface ExerciseContextType {
+    exercises: WgerExercise[];
+    loading: boolean;
 }
 
 export interface ExerciseGenerationProps {
@@ -79,14 +118,6 @@ export interface GoalParams {
     timePerRep: number;    // secondi
 }
 
-export interface WorkoutSession {
-    day: string;
-    sets: number;
-    reps: number;
-    rest: number;
-    exercises: WgerExercise[];
-}
-
 export interface ConstraintProps {
     minNumOfExercises: number;
     PriorityMuscles: string[];
@@ -98,4 +129,13 @@ export type Goal = "strength" | "hypertrophy" | "endurance" | "weight loss" | "g
 export interface WorkoutPlan {
     workout: WgerExercise[],
     sets: number;
+}
+
+export interface WorkoutSession {
+    started: boolean;
+    completedSets: Record<string, boolean>;
+    remainingRest: number | null;
+    activeSetId: string | null;
+    activeExerciseId: string | null;
+    finished: boolean;
 }
