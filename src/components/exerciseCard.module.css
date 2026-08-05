@@ -1,6 +1,7 @@
 .card {
     position: relative;
-    background: #1f1f1f;
+    background: #1a2538;
+
     border-radius: 16px;
 
     width: 90%;
@@ -44,7 +45,9 @@
     display: flex;
     justify-content: center;
 
-    background: #292929;
+    background: #1a2538;
+    border: 1px solid #2a3a52;
+
 
     padding: 12px;
     border-radius: 10px;
@@ -72,7 +75,9 @@
     align-items: center;
     justify-content: space-between;
 
-    background: #292929;
+    background: #1a2538;
+    border: 1px solid #2a3a52;
+
 
     padding: 12px 15px;
 
@@ -92,7 +97,17 @@
     border-radius: 10px;
 }
 
+.notCompleted {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
+    background: #e20d0df9;
+
+    padding: 12px 15px;
+
+    border-radius: 10px;
+}
 
 /* Numero set */
 .setLabel {
@@ -262,7 +277,6 @@ button:hover {
     background-color: #c62828;
     transform: scale(1.1);
 }
-
 
 .noImageEmoji {
     margin-top: 30px;

@@ -23,17 +23,24 @@ export const Navbar = () => {
                 <div className={styles.userSection}>
                     <Link to="/" className={styles.links}>{user?.displayName}</Link>
 
-                    {user ? (<button
-                        className={styles.logOutButton}
-                        onClick={logOut}
-                    >
-                        Log Out
-                    </button>
-                    ) :
+                    {user ? <>
+                        <div className={styles.userSection}>
+                            <Link to="/history" className={styles.links}>History</Link>
+                        </div>
+
+                        <button
+                            className={styles.logOutButton}
+                            onClick={logOut}
+                        >
+                            Log Out
+                        </button>
+                    </>
+                        :
                         (
                             <Link to="/" className={styles.links}>Profile</Link>
                         )}
                 </div>
+
 
             </div>
         </>

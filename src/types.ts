@@ -1,6 +1,11 @@
+import { Timestamp } from "firebase/firestore";
+// ../components/authForm.tsx
 export interface AuthFormProps {
     mode: "login" | "signup";
 }
+
+// ../components/workoutCard.tsx
+// ../pages/home.tsx
 export interface WorkoutCardProps {
     id: string;
     name: string;
@@ -11,11 +16,15 @@ export interface WorkoutCardProps {
 
 }
 
+// ../functions/workoutGenerator.ts
 export interface Sets {
     weight: number;
     reps: number;
+    completed: boolean;
 }
 
+// ../pages/editWorkout.tsx
+// ../functions/workoutGenerator.ts
 export interface Exercises {
     docId: string;  // id of the document
     id: string; // id of the exercise
@@ -28,19 +37,19 @@ export interface Exercises {
     sets: Record<string, Sets>;
 };
 
+
+// ../components/selectorCard.tsx
+// ../pages/editWorkout.tsx
+// ../pages/home.tsx
 export interface Workout {
     name: string;
     exercises: Record<string, Exercises>;
     cardOrder: number;
 };
 
-export interface ExerciseCardProps {
-    exercise: Exercises;
-    session: WorkoutSession;
-    onUpdate: () => void;
-    onToggleSet: (id: string, setId: string, rest: number,) => void;
-}
-
+// ../components/selectorCard.tsx
+// ../functions/workoutGenerator.ts
+// ../hooks/exerciseProvider.tsx
 export interface WgerExercise {
     docId: string,
     exerciseSourceId: number;
@@ -51,16 +60,28 @@ export interface WgerExercise {
     secondaryMuscleGroup: string[];
     equipment: string[];
 }
-
 interface MuscleGroup {
     name_en: string;
 }
 
+// ../components/exerciseCard.tsx
+export interface ExerciseCardProps {
+    exercise: Exercises;
+    session?: WorkoutSession;
+    onUpdate?: () => void;
+    onToggleSet?: (exercise: Exercises, setId: string, rest: number,) => void;
+    isDone?: boolean;
+    isEditable?: boolean;
+}
+
+// ../components/exerciseSelector
 export interface ExerciseSelectorProps {
     documentId: string;
     onClose: () => void;
 }
 
+
+// ../hooks/exerciseProvider.tsx
 export interface WgerApiResponse {
     results: WgerExerciseApi[];
 }
@@ -87,29 +108,19 @@ interface WgerTranslation {
     language: number;
     name: string;
 }
+
+// ../functions/workoutGeneratoion.tsx
 export interface WgerEquipment {
     name: string
 }
 
+// ../contexts/exerciseContext.tsx
 export interface ExerciseContextType {
     exercises: WgerExercise[];
     loading: boolean;
 }
 
-export interface ExerciseGenerationProps {
-    goal: string;
-    sessionsPerWeek: number;
-    sessionsDuration: number;
-    equipment: string[];
-}
-
-export interface GoalSettings {
-    sets: number[];
-    reps: number[];
-    rest: number;
-    cardioPercentage: number;
-}
-
+// ../functions/workoutGenerator.ts
 export interface GoalParams {
     sets: [number, number];
     reps: [number, number];
@@ -118,24 +129,47 @@ export interface GoalParams {
     timePerRep: number;    // secondi
 }
 
+// ../functions/workoutGenerator.ts
 export interface ConstraintProps {
     minNumOfExercises: number;
     PriorityMuscles: string[];
     secondaryMuscles: string[];
 }
 
+// ../functions/workoutGeneratoion.tsx
+// ../functions/workoutGenerator.ts
 export type Goal = "strength" | "hypertrophy" | "endurance" | "weight loss" | "general fitness";
 
+// ../functions/workoutGenerator.ts
 export interface WorkoutPlan {
     workout: WgerExercise[],
     sets: number;
 }
 
+// Session info
 export interface WorkoutSession {
-    started: boolean;
-    completedSets: Record<string, boolean>;
+    title: string;
+    active: boolean;
     remainingRest: number | null;
-    activeSetId: string | null;
-    activeExerciseId: string | null;
-    finished: boolean;
+    startedAt: Timestamp | null;
+    finishedAt: Timestamp | null;
+    description: string;
+    completed: string[];
 }
+
+export interface HistoryProps {
+    date: Timestamp,
+    duration: number,
+    title: string,
+    description: string,
+    exercises: Record<string, Exercises>
+}
+
+export interface HistoryExercises {
+    date: Timestamp,
+    duration: number,
+    title: string,
+    description: string,
+    exercises: Exercises[]
+}
+

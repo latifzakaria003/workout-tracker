@@ -3,37 +3,33 @@ import { ExerciseSelector } from '../components/exerciseSelector';
 import { useEffect, useState } from 'react';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db, auth } from '../firebase/firebase';
-import type { WorkoutSession, Exercises, Workout } from '../types';
+import type { WorkoutSession, Exercises, Workout, Sets } from '../types';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navbar } from '../components/navbar';
 import { useParams } from 'react-router-dom';
+import { Timestamp } from "firebase/firestore";
 import styles from './editWorkout.module.css';
 
 
-/*
-IDEA PRESA DA HEVY, le exercise card dovrebbero avere solo il riposo e poi quando ci clicco fornire le informazioni sull'esercizio (usando wger) 
-ci dovrebbe anche essere un pulsante "START WORKOUT" che fa partire il workout come in hevy. 
-*/
-
-
-
 export const EditWorkout = () => {
-
     const [session, setSession] = useState<WorkoutSession>({
-        started: false,
-        completedSets: {},
+        title: "",
+        active: false,
+        startedAt: null,
+        finishedAt: null,
         remainingRest: null,
-        activeSetId: null,
-        activeExerciseId: null,
-        finished: false,
+        description: "",
+        completed: [],
     });
+
     const { id } = useParams();
     const [user] = useAuthState(auth);
     const [docId, setDocId] = useState("");
     const [exercises, setExercises] = useState<Exercises[]>([]);
     const [newName, setNewName] = useState("");
     const [isSearching, setIsSearching] = useState(false);
-
+    const [ended, setEnded] = useState(false);
+    const [savedSuccess, setSavedSuccess] = useState(false);
     const workoutsRef = collection(db, "workouts");
 
     const createDoc = async () => {
@@ -73,7 +69,14 @@ export const EditWorkout = () => {
 
                         ex.forEach(([exerciseId, exercise]) => {
 
-                            const sets = workout.exercises[exerciseId].sets;
+                            const updatedSet: Record<string, Sets> = {};
+                            Object.entries(workout.exercises[exerciseId].sets).forEach(([id, set]) => {
+
+                                updatedSet[id] = {
+                                    ...set,
+                                    completed: false
+                                };
+                            })
 
                             exerciseList.push({
                                 docId: id,
@@ -84,7 +87,7 @@ export const EditWorkout = () => {
                                 imageUrl: exercise.imageUrl,
                                 muscleGroup: exercise.muscleGroup,
                                 rest: exercise.rest,
-                                sets: sets
+                                sets: updatedSet,
                             });
                         });
                     }
@@ -93,62 +96,127 @@ export const EditWorkout = () => {
             }
 
             setExercises(exerciseList);
-            getExercise();
         } catch (err) {
             console.error(err);
         }
     }
 
-    const toggleSet = (exerciseId: string, setIndex: string, rest: number) => {
+    const startSession = () => {
 
-        const setId = `${exerciseId}-${setIndex}`;
-        setSession(prev => {
+        setSession({
+            title: "",
+            active: true,
+            startedAt: Timestamp.now(),
+            finishedAt: null,
+            remainingRest: null,
+            description: "",
+            completed: [],
+        })
+    }
 
-            if (prev.completedSets[setId]) {
-                const { [setId]: _, ...completedSets } = prev.completedSets;
+    const toggleSet = (exercise: Exercises, setIndex: string, rest: number) => {
+        const setId = `${exercise.id}-${setIndex}`;
+        const exists = session.completed.includes(setId);
+
+        setExercises(prev => {
+            const updated = prev.map(e => {
+                if (e.id !== exercise.id) {
+                    return e;
+                }
 
                 return {
-                    ...prev,
-                    completedSets,
-                    activeSetId: null,
-                    activeExerciseId: null,
-                    remainingRest: null
+                    ...e,
+                    sets: {
+                        ...e.sets,
+                        [setIndex]: {
+                            ...e.sets[setIndex],
+                            completed: !exists,
+                        },
+                    },
                 };
-            }
+            });
+            return updated;
+        });
 
+        setSession(prev => {
+            if (!prev) return prev;
             return {
                 ...prev,
-                completedSets: {
-                    ...prev.completedSets,
-                    [setId]: true
-                },
-                activeSetId: setId,
-                activeExerciseId: exerciseId,
-                remainingRest: rest
+                remainingRest: exists ? prev.remainingRest : rest,
+                completed: exists
+                    ? prev.completed.filter(id => id !== setId)
+                    : [...prev.completed, setId]
             };
         });
     };
 
-
-    const endWorkout = async () => {
-
-        try {
-            setSession(prev => { return { ...prev, finished: true } });
-            while (!session.finished) { ; }
-
-
-
-
-
-        } catch (err) {
-            console.error(err);
-        }
-
-
-
+    const endSession = () => {
+        setSession((prev) => {
+            return {
+                ...prev,
+                finishedAt: Timestamp.now(),
+            }
+        })
+        setEnded(true);
     }
 
 
+    const saveWorkout = async () => {
+        try {
+            const workoutHistoryRef = collection(db, "workoutsHistory");
+            let duration = 0;
+
+            if (session.startedAt && session.finishedAt) {
+                duration = session.finishedAt.toMillis() - session.startedAt.toMillis();
+            }
+            const durationSeconds = Math.floor(duration / 1000);
+
+            const filteredExercises = exercises
+                .map((exercise) => {
+                    const filteredSets = Object.fromEntries(
+                        Object.entries(exercise.sets).filter(([_, set]) => set.completed)
+                    );
+                    return {
+                        ...exercise,
+                        sets: filteredSets
+                    };
+                })
+                .filter((exercise) => Object.keys(exercise.sets).length > 0);
+
+            if (filteredExercises.length === 0) {
+                console.log("Nessun esercizio completato, salvataggio annullato.");
+                return;
+            }
+
+            const docRef = await addDoc(workoutHistoryRef, {
+                title: session.title,
+                description: session.description,
+                duration: durationSeconds,
+                exercises: filteredExercises,
+                date: Timestamp.now()
+            });
+
+            console.log("Salvato con successo!", docRef.id);
+            setSavedSuccess(true);
+
+            setTimeout(() => {
+                setSavedSuccess(false);
+            }, 3000);
+
+            setSession({
+                title: "",
+                active: false,
+                startedAt: null,
+                finishedAt: null,
+                remainingRest: null,
+                description: "",
+                completed: []
+            })
+            setEnded(false);
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     useEffect(() => {
         getExercise();
@@ -184,7 +252,7 @@ export const EditWorkout = () => {
         if (session.remainingRest !== 0)
             return;
 
-        console.log("REST FINITO");
+        console.log("NO MORE REST!");
 
     }, [session.remainingRest]);
 
@@ -198,9 +266,23 @@ export const EditWorkout = () => {
                     onClose={() => setIsSearching(false)}
                 />
             }
+            {savedSuccess && (
+                <div className={styles.successOverlay}>
+                    <div className={styles.successModal}>
+                        <div className={styles.checkmarkWrapper}>
+                            <svg className={styles.checkmark} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                <circle className={styles.checkmarkCircle} cx="26" cy="26" r="25" fill="none" />
+                                <path className={styles.checkmarkCheck} fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                            </svg>
+                        </div>
+                        <h3>Workout Saved!</h3>
+                        <p style={{ color: "white" }}>You can now find it in your history page💪</p>
+                    </div>
+                </div>
+            )}
 
             {!id &&
-                <div>
+                <div className={styles.nameInputContainer}>
                     <p>Select a name to continue..</p>
                     <input
                         placeholder='name...'
@@ -212,21 +294,14 @@ export const EditWorkout = () => {
             {id && <div className={styles.action}>
                 <button
                     className={styles.addButton}
-                    onClick={() => {
+                    onClick={
+                        !session?.active ?
+                            startSession :
+                            endSession
+                    }
 
-                        setSession({
-                            started: true,
-                            completedSets: {},
-                            remainingRest: null as number | null,
-                            activeSetId: null as string | null,
-                            activeExerciseId: null as string | null,
-                            finished: false,
-                        })
-                    }}
+                > {!session?.active ? "Start Workout" : "End Workout"}</button>
 
-
-
-                > {!session?.started ? "Start Workout" : "End Workout"}</button>
             </div >}
             <div className={styles.actions}>
 
@@ -240,7 +315,7 @@ export const EditWorkout = () => {
                 </button>
             </div>
 
-            {
+            {!ended &&
                 exercises.map((exercise) => (
                     <>
                         <ExerciseCard
@@ -249,11 +324,56 @@ export const EditWorkout = () => {
                             session={session}
                             onUpdate={getExercise}
                             onToggleSet={toggleSet}
+                            isDone={false}
+
                         />
                     </>
 
                 ))
             }
+            <div>
+                {ended &&
+                    <>
+                        <div className={styles.summary}>
+                            <h2>Workout Summary</h2>
+                            <div className={styles.summaryInputs}>
+                                <input
+                                    placeholder='Add name...'
+                                    onChange={(e) => setSession(prev => ({
+                                        ...prev,
+                                        title: e.target.value
+                                    }))}
+                                />
+
+                                <input
+                                    placeholder='Add description...'
+                                    onChange={(e) => setSession(prev => ({
+                                        ...prev,
+                                        description: e.target.value
+                                    }))}
+                                />
+                                <button onClick={() => saveWorkout()}>
+                                    SAVE WORKOUT
+                                </button>
+                                <div className={styles.exerciseContainer}>
+                                    {exercises.map((exercise) => (
+                                        <ExerciseCard
+                                            key={exercise.id}
+                                            exercise={exercise}
+                                            session={session}
+                                            onUpdate={() => { }}
+                                            onToggleSet={toggleSet}
+                                            isDone={true}
+                                            isEditable={false}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </>
+
+                }
+            </div>
         </>
     );
 

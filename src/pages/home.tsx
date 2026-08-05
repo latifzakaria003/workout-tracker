@@ -61,8 +61,6 @@ export const Home = () => {
 
         <>
             <Navbar />
-
-            <button>Check past sessions</button>
             <div className={styles.container}>
                 <h1 className={styles.title}>Home</h1>
 

@@ -9,7 +9,9 @@ import { auth } from './firebase/firebase'
 import { SignUp } from './pages/signUp';
 import { EditWorkout } from './pages/editWorkout';
 import { WorkoutGeneration } from './pages/workoutGeneration';
+import { History } from './pages/history';
 import type { User } from 'firebase/auth'
+
 
 
 
@@ -37,6 +39,8 @@ function App() {
           <Route path="/signUp" element={<SignUp />}> </Route>
           <Route path="/editWorkout/:id?" element={user ? <EditWorkout /> : <Navigate to='/login' />}> </Route>
           <Route path="/workoutGeneration" element={user ? <WorkoutGeneration /> : <Navigate to='/login' />}> </Route>
+          <Route path="/history" element={user ? <History /> : <Navigate to='/login' />}> </Route>
+
 
 
 

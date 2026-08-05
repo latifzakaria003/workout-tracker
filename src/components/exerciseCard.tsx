@@ -4,7 +4,7 @@ import { doc, updateDoc, deleteField } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { useEffect, useState } from 'react';
 
-export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: ExerciseCardProps) => {
+export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet, isDone, isEditable = true }: ExerciseCardProps) => {
 
     const [isAddingSet, setIsAddingSet] = useState(false);
     const [isDeletingSet, setisDeletingSet] = useState(false);
@@ -33,7 +33,7 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
             console.error(err);
         }
         setIsAddingSet(false);
-        onUpdate();
+        onUpdate?.();
     };
 
     const DeleteSet = async (setId: string) => {
@@ -45,7 +45,7 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
             console.error(err);
         }
         setisDeletingSet(false);
-        onUpdate();
+        onUpdate?.();
     }
 
     const EditSet = async (setId: string) => {
@@ -60,7 +60,7 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
             console.error(err);
         }
         setEditingSet(null);
-        onUpdate();
+        onUpdate?.();
     }
 
     const DeleteExercise = async () => {
@@ -75,15 +75,16 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
     }
 
     useEffect(() => {
-        onUpdate();
+        onUpdate?.();
     }, []);
 
     return (
         <div className={styles.card} key={exercise.exerciseOrder}>
-            <button
+
+            {isEditable && <button
                 className={styles.deleteButton}
                 onClick={() => { DeleteExercise() }}
-            >X</button>
+            >X</button>}
             <h1 className={styles.title}>
                 {exercise.exerciseName}
             </h1>
@@ -111,7 +112,7 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
             <div className={styles.setsContainer}>
                 {Object.entries(exercise.sets).map(([setId, set], index) => (
                     <div
-                        className={session.completedSets[`${exercise.id}-${setId}`] ? styles.completedSet : styles.set}
+                        className={session?.completed.includes(`${exercise.id}-${setId}`) ? styles.completedSet : ((isDone) ? styles.notCompleted : styles.set)}
                         key={index}
                     >
 
@@ -144,7 +145,7 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
                             <>
                                 <span
                                     className={styles.setValue}
-                                    onDoubleClick={() => {
+                                    onDoubleClick={!isEditable ? undefined : () => {
                                         setEditingSet(setId);
                                         setEditWeight(set.weight);
                                         setEditReps(set.reps);
@@ -155,7 +156,7 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
 
                                 <span
                                     className={styles.setValue}
-                                    onDoubleClick={() => {
+                                    onDoubleClick={!isEditable ? undefined : () => {
                                         setEditingSet(setId);
                                         setEditWeight(set.weight);
                                         setEditReps(set.reps);
@@ -163,8 +164,8 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
                                 >
                                     {set.reps} reps
                                 </span>
-                                {session?.started && <button
-                                    onClick={() => onToggleSet(exercise.id, setId, exercise.rest)}
+                                {session?.active && isEditable && <button
+                                    onClick={() => onToggleSet?.(exercise, setId, exercise.rest)}
                                     style={{ backgroundColor: "green" }}
                                 > ✓</button>}
                             </>
@@ -185,7 +186,6 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
                 <div className={styles.addSetForm}>
                     <input placeholder="Weight.."
                         onChange={(e) => setNewWeight(Number(e.target.value))}
-
                     />
 
                     <input placeholder="Reps.."
@@ -196,13 +196,14 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet }: Exerc
 
             )
             }
-            <button
-                onClick={() => isAddingSet ? Addset() : setIsAddingSet(true)}>
-                {!isAddingSet ? "Add set" : "Save"}</button>
-            <button
-                onClick={() => isDeletingSet ? setisDeletingSet(false) : setisDeletingSet(true)}
-            > {isDeletingSet ? "Cancel" : "Remove set"}</button>
-
+            {isEditable && <>
+                <button
+                    onClick={() => isAddingSet ? Addset() : setIsAddingSet(true)}>
+                    {!isAddingSet ? "Add set" : "Save"}</button>
+                <button
+                    onClick={() => isDeletingSet ? setisDeletingSet(false) : setisDeletingSet(true)}
+                > {isDeletingSet ? "Cancel" : "Remove set"}</button>
+            </>}
         </div >
     );
 };
