@@ -1,5 +1,5 @@
 
-import { collection, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { useEffect, useState } from "react";
 import type { Sets, HistoryProps, HistoryExercises } from "../types";
@@ -12,6 +12,16 @@ import { Navbar } from "../components/navbar";
 export const History = () => {
 
     const [history, setHistory] = useState<HistoryExercises[]>([]);
+
+    const deleteHistory = async (id: string) => {
+        try {
+            await deleteDoc(doc(db, "workoutsHistory", id))
+        } catch (err) {
+            console.error(err);
+        }
+        getHistory();
+    }
+
 
     const getHistory = async () => {
         try {
@@ -27,6 +37,7 @@ export const History = () => {
 
                 const ex = Object.entries(workout.exercises);
                 historyList.push({
+                    docId: doc.id,
                     date: workout.date,
                     duration: workout.duration,
                     title: workout.title,
@@ -84,7 +95,9 @@ export const History = () => {
                 ) : (
                     history.map((field) => (
                         <div key={field.date.seconds} className={styles.historyCard}>
-
+                            <button
+                                onClick={() => deleteHistory(field.docId)}
+                            >X</button>
                             <div className={styles.header}>
                                 <div>
                                     <h1 className={styles.title}>{field.title}</h1>
