@@ -56,8 +56,9 @@ export interface WgerExercise {
     name: string;
     imageUrl: string;
     category: string;   // legs, arms, chest, back, ...
-    muscleGroup: string | MuscleGroup[];
-    secondaryMuscleGroup: string[];
+    muscleGroup: string;
+    muscleGroupArray: MuscleGroup[];
+    secondaryMuscleGroup: SecondaryMuscle[];
     equipment: string[];
 }
 interface MuscleGroup {
@@ -96,17 +97,19 @@ interface WgerExerciseApi {
         name: string;
     };
     muscles: {
+        name: string;
         name_en: string;
     }[];
-    muscles_secondary: {
-        name_en: string
-    }[];
+    muscles_secondary: SecondaryMuscle[];
     equipment: WgerEquipment[];
 }
 
 interface WgerTranslation {
     language: number;
     name: string;
+}
+interface SecondaryMuscle {
+    name_en: string;
 }
 
 // ../functions/workoutGeneratoion.tsx
@@ -166,6 +169,7 @@ export interface HistoryProps {
 }
 
 export interface HistoryExercises {
+    docId: string,
     date: Timestamp,
     duration: number,
     title: string,

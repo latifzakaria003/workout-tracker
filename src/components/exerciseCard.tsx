@@ -13,6 +13,8 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet, isDone,
     const [editReps, setEditReps] = useState(0);
     const [newWeight, setNewWeight] = useState(0);
     const [newReps, setNewReps] = useState(0);
+    const [editingRest, setEditingRest] = useState<string | null>(null);
+    const [newRest, setNewRest] = useState(0);
 
 
     const workoutRef = doc(db, "workouts", exercise.docId);
@@ -74,6 +76,17 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet, isDone,
         }
     }
 
+    const changeRest = async () => {
+        try {
+            await updateDoc(workoutRef, {
+                [`exercises.${exercise.id}.rest`]: newRest
+            });
+            onUpdate?.();
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     useEffect(() => {
         onUpdate?.();
     }, []);
@@ -100,13 +113,39 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet, isDone,
             }
 
             <div className={styles.info} key={exercise.id}>
-                <p>
-                    Rest: {`${Math.floor(exercise.rest / 60)
-                        .toString()
-                        .padStart(2, "0")}:${(exercise.rest % 60)
-                            .toString()
-                            .padStart(2, "0")}`}
-                </p>
+
+                {editingRest === exercise.id ?
+                    <>
+                        <input
+                            className={styles.input}
+                            value={newRest}
+                            onChange={(e) => setNewRest(Number(e.target.value))}
+                        />
+                        <div>
+                            <button
+                                onClick={() => { changeRest(); setEditingRest(null) }}
+                            >
+                                SAVE
+                            </button>
+                        </div>
+                    </>
+                    :
+                    <>
+                        <span
+                            onDoubleClick={!isEditable ? undefined : () => {
+                                setEditingRest(exercise.id);
+                            }}
+
+                        >
+                            Rest: {`${Math.floor(exercise.rest / 60)
+                                .toString()
+                                .padStart(2, "0")}:${(exercise.rest % 60)
+                                    .toString()
+                                    .padStart(2, "0")}`}
+                        </span>
+                    </>
+                }
+
             </div>
 
             <div className={styles.setsContainer}>

@@ -21,7 +21,7 @@ export const ExerciseProvider = ({ children }: { children: React.ReactNode }) =>
                     const translation = exercise.translations.find(
                         t => t.language === 2
                     );
-                    const muscle = exercise.muscles.length == 0 ? exercise.category.name : exercise.muscles[0].name_en
+                    const muscle: string = (exercise.muscles.length == 0) ? exercise.category.name : ((exercise.muscles[0].name_en) ? exercise.muscles[0].name_en : exercise.muscles[0].name)
                     return {
                         docId: crypto.randomUUID(),
                         exerciseSourceId: exercise.id,
@@ -29,7 +29,8 @@ export const ExerciseProvider = ({ children }: { children: React.ReactNode }) =>
                         imageUrl: exercise.images[0]?.image ?? "",
                         category: exercise.category.name,
                         muscleGroup: muscle,
-                        secondaryMuscleGroup: [],
+                        muscleGroupArray: exercise.muscles,
+                        secondaryMuscleGroup: exercise.muscles_secondary,
                         equipment: exercise.equipment.map(e => e.name),
                     };
                 });

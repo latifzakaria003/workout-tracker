@@ -32,21 +32,8 @@ export const SelectorCard = ({ exercise }: { exercise: WgerExercise }) => {
             const newOrder = maxOrder + 1;
 
             const exerciseId = doc(collection(db, "workouts")).id;
-            let muscle;
-            if (exercise.muscleGroup.length > 1 && Array.isArray(exercise.muscleGroup)) {
-                for (let i = 0; i < exercise.muscleGroup.length; i++) {
-                    if (exercise.muscleGroup[i].name_en) {
-                        muscle = exercise.muscleGroup[i].name_en;
-                        console.log("name_en: ", exercise.muscleGroup[i].name_en)
-                        break;
-                    }
-                }
-            }
-            console.log("pre: ", muscle);
-            if (!muscle)
-                muscle = exercise.category;
 
-            console.log("final: ", muscle);
+
 
             await updateDoc(exerciseRef, {
 
@@ -55,7 +42,7 @@ export const SelectorCard = ({ exercise }: { exercise: WgerExercise }) => {
                     exerciseOrder: newOrder,
                     exerciseSourceId: exercise.exerciseSourceId,
                     imageUrl: exercise.imageUrl,
-                    muscleGroup: muscle,
+                    muscleGroup: exercise.muscleGroup,
                     sets: {},
                     rest: 0
                 }
@@ -100,10 +87,6 @@ export const SelectorCard = ({ exercise }: { exercise: WgerExercise }) => {
                 <h3 className={styles.name}>
                     {exercise.name}
                 </h3>
-
-                <span className={styles.muscle}>
-                    {(typeof exercise.muscleGroup === "string") ? exercise.muscleGroup : "no muscle"}
-                </span>
 
             </div>
 
