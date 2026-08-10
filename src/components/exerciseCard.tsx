@@ -182,7 +182,7 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet, isDone,
                             </>
                         ) : (
                             <>
-                                <span
+                                {!(exercise.exerciseCategory === "Cardio") ? <span
                                     className={styles.setValue}
                                     onDoubleClick={!isEditable ? undefined : () => {
                                         setEditingSet(setId);
@@ -192,8 +192,15 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet, isDone,
                                 >
                                     {set.weight} kg
                                 </span>
+                                    :
+                                    <span
+                                        className={styles.setValue}
+                                    >
+                                        -
+                                    </span>
+                                }
 
-                                <span
+                                {!(exercise.exerciseCategory === "Cardio") ? <span
                                     className={styles.setValue}
                                     onDoubleClick={!isEditable ? undefined : () => {
                                         setEditingSet(setId);
@@ -203,6 +210,18 @@ export const ExerciseCard = ({ exercise, session, onUpdate, onToggleSet, isDone,
                                 >
                                     {set.reps} reps
                                 </span>
+                                    :
+                                    <span
+                                        className={styles.setValue}
+                                        onDoubleClick={!isEditable ? undefined : () => {
+                                            setEditingSet(setId);
+                                            setEditWeight(set.weight);
+                                            setEditReps(set.reps);
+                                        }}
+                                    >
+                                        {set.reps} min
+                                    </span>
+                                }
                                 {session?.active && isEditable && <button
                                     onClick={() => onToggleSet?.(exercise, setId, exercise.rest)}
                                     style={{ backgroundColor: "green" }}

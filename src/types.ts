@@ -29,6 +29,7 @@ export interface Exercises {
     docId: string;  // id of the document
     id: string; // id of the exercise
     exerciseName: string;
+    exerciseCategory: string;
     exerciseOrder: number;
     exerciseSourceId: number;
     imageUrl: string;
@@ -55,7 +56,7 @@ export interface WgerExercise {
     exerciseSourceId: number;
     name: string;
     imageUrl: string;
-    category: string;   // legs, arms, chest, back, ...
+    category: string;   // legs, arms, chest, back, cardio ...
     muscleGroup: string;
     muscleGroupArray: MuscleGroup[];
     secondaryMuscleGroup: SecondaryMuscle[];
@@ -146,7 +147,7 @@ export type Goal = "strength" | "hypertrophy" | "endurance" | "weight loss" | "g
 // ../functions/workoutGenerator.ts
 export interface WorkoutPlan {
     workout: WgerExercise[],
-    sets: number;
+    sets: number[];
 }
 
 // Session info

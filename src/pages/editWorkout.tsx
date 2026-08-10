@@ -83,6 +83,7 @@ export const EditWorkout = () => {
                                 id: exerciseId,
                                 exerciseName: exercise.exerciseName,
                                 exerciseOrder: exercise.exerciseOrder,
+                                exerciseCategory: exercise.exerciseCategory,
                                 exerciseSourceId: exercise.exerciseSourceId,
                                 imageUrl: exercise.imageUrl,
                                 muscleGroup: exercise.muscleGroup,

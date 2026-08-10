@@ -27,6 +27,7 @@ export const WorkoutGeneration = () => {
     const Generate = async () => {
         while (loading) { ; }
         const workout = GenerateWorkout(exercises, sessionsPerWeek, sessionsDuration, goal, userEquipment);
+        console.log("il workout generato è: ", workout);
 
         const workoutRef = collection(db, "workouts");
         const snapshot = await getCountFromServer(workoutRef);
@@ -34,24 +35,31 @@ export const WorkoutGeneration = () => {
         let cardOrder = snapshot.data().count;
         for (let i = 0; i < workout.length; i++) {
             const exercisesMap: Record<string, Exercises> = {};
-            const sets: Record<string, Sets> = {}
-            for (let j = 0; j < workout[i].sets; j++) {
-                sets[j] = { weight: 0, reps: GOAL_PARAMS[goal].reps[0] }
-            }
             for (let j = 0; j < workout[i].workout.length; j++) {
                 const exerciseId = doc(collection(db, "workouts")).id;
+                const sets: Record<string, Sets> = {}
+                for (let k = 0; k < workout[i].sets[j]; k++) {
+                    if (workout[i].workout[j].category.toLowerCase() === "cardio") {
+                        sets[k] = { weight: 0, reps: (workout[i].sets[workout[i].sets.length - 1]), completed: false };
+                        break;
+                    }
+                    sets[k] = { weight: 0, reps: (workout[i].sets[workout[i].sets.length - 2]), completed: false };
+                }
 
                 exercisesMap[exerciseId] = {
                     docId: workoutRef.id,
                     id: exerciseId,
                     exerciseName: workout[i].workout[j].name,
+                    exerciseCategory: workout[i].workout[j].category,
                     exerciseSourceId: workout[i].workout[j].exerciseSourceId,
                     exerciseOrder: j,
                     imageUrl: workout[i].workout[j].imageUrl,
                     muscleGroup: workout[i].workout[j].muscleGroup,
                     rest: GOAL_PARAMS[goal].rest,
-                    sets: sets
+                    sets: sets,
                 }
+
+                console.log("muscle group:", exercisesMap[exerciseId].muscleGroup);
             };
 
             await addDoc(workoutRef, {
