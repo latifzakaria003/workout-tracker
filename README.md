@@ -54,7 +54,7 @@ npm -v
 1. **Clonare il repository**
 
    ```bash
-   git clone <URL-REPOSITORY>
+   git clone https://github.com/latifzakaria003/workout-tracker.git
    cd workout-tracker
    ```
 
