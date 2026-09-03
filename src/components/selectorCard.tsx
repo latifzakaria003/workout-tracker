@@ -1,95 +1,114 @@
-import type { WgerExercise, Workout } from "../types";
+import type { SelectorCardProps, Workout } from "../types";
 import { db } from '../firebase/firebase';
 import { collection, updateDoc, doc, getDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
 import styles from './selectorCard.module.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { Feedback } from '../types'
 
+const DEFAULT_REST_SECONDS = 90;
 
-export const SelectorCard = ({ exercise }: { exercise: WgerExercise }) => {
+export const SelectorCard = ({ exercise, documentId, onAdded }: SelectorCardProps) => {
 
-    const [message, setMessage] = useState("");
+    const [feedback, setFeedback] = useState<Feedback>(null); // feedback di salvataggio
+    const [adding, setAdding] = useState(false);
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        if (!feedback) return;
+
+        const timeout = setTimeout(() => setFeedback(null), 900); // durata feedback
+        return () => clearTimeout(timeout);
+    }, [feedback]);
 
     const createExercise = async () => {
+        if (adding) return;
+
+        setAdding(true);
+
         try {
-            const exerciseRef = doc(db, "workouts", exercise.docId);
+            const workoutRef = doc(db, "workouts", documentId);
+            const workoutSnap = await getDoc(workoutRef);
 
-            const workoutSnap = await getDoc(exerciseRef);
-
-            if (!workoutSnap.exists()) return;
+            if (!workoutSnap.exists()) {
+                setFeedback({ text: "Workout not found", ok: false });
+                return;
+            }
 
             const workout = workoutSnap.data() as Workout;
 
+            // prendo il numero di esercizi
             const values = Object.values(workout.exercises ?? {});
-
-            const maxOrder =
-                values.length === 0
-                    ? -1
-                    : Math.max(...values.map((e) => e.exerciseOrder));
-
-            const newOrder = maxOrder + 1;
+            const order = values.length === 0
+                ? 0
+                : Math.max(...values.map((e) => e.exerciseOrder)) + 1;
 
             const exerciseId = doc(collection(db, "workouts")).id;
 
-
-
-            await updateDoc(exerciseRef, {
-
+            await updateDoc(workoutRef, {
                 [`exercises.${exerciseId}`]: {
                     exerciseName: exercise.name,
-                    exerciseOrder: newOrder,
+                    exerciseOrder: order,
                     exerciseSourceId: exercise.exerciseSourceId,
+                    exerciseCategory: exercise.category,
                     imageUrl: exercise.imageUrl,
                     muscleGroup: exercise.muscleGroup,
                     sets: {},
-                    rest: 0
+                    rest: DEFAULT_REST_SECONDS,
                 }
             });
 
-            navigate(`/editWorkout/${exercise.docId}`);
-
+            setFeedback({ text: "Exercise added", ok: true });
+            onAdded?.();
         } catch (err) {
             console.error(err);
+            setFeedback({ text: "Could not add exercise", ok: false });
+        } finally {
+            setAdding(false);
         }
-    }
+    };
 
     return (
-        <div className={styles.card} onClick={() => {
-            createExercise(); setMessage("Exercise Added"); setTimeout(() => {
-                setMessage("");
-            }, 900);
-        }}>
-            {message && (
-                <div className={styles.toast}>
-                    {message}
-                </div>
+        <button
+            type="button"
+            className={styles.card}
+            onClick={createExercise}
+            disabled={adding}
+        >
+
+            {/* feedback */}
+
+            {feedback && (
+                <span
+                    className={`${styles.toast} ${feedback.ok ? styles.toastOk : styles.toastError}`}
+                    role="status"
+                >
+                    {feedback.text}
+                </span>
             )}
 
-            <div className={styles.imageContainer}>
+            {/* immagine dell'esercizio */}
+
+            <span className={styles.imageContainer}>
                 {exercise.imageUrl ? (
                     <img
                         className={styles.image}
                         src={exercise.imageUrl}
-                        alt={exercise.name}
+                        alt=""
+                        loading="lazy"
                     />
                 ) : (
-                    <div className={styles.noImage}>
-                        🏋️
-                    </div>
+                    <span className={styles.noImage} aria-hidden="true">🏋️</span>
                 )}
-            </div>
+            </span>
 
+            {/* nome e gruppo muscolare */}
 
-            <div className={styles.info}>
+            <span className={styles.info}>
+                <span className={styles.name}>{exercise.name}</span>
 
-                <h3 className={styles.name}>
-                    {exercise.name}
-                </h3>
-
-            </div>
-
-        </div>
+                {exercise.muscleGroup && (
+                    <span className={styles.muscle}>{exercise.muscleGroup}</span>
+                )}
+            </span>
+        </button>
     );
 };

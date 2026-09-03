@@ -1,57 +1,57 @@
 .card {
     position: relative;
-    background: #1a2538;
-
-    border-radius: 16px;
-
     width: 90%;
     max-width: 550px;
-
     margin: 25px auto;
     padding: 25px;
-
-    color: white;
-
+    background: #1a2538;
+    border: 1px solid #2a3a52;
+    border-radius: 16px;
+    color: #e2e8f0;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-
     display: flex;
     flex-direction: column;
     gap: 18px;
 }
 
-
 .title {
+    margin: 0;
+    padding-right: 2.5rem;
     text-align: center;
-    color: white;
+    color: #f8fafc;
     font-size: 24px;
     font-weight: 700;
-
-    margin: 0;
 }
 
-
+/* IMMAGINE */
 .image {
     width: 100%;
     height: 220px;
-
-    object-fit: cover;
-
+    object-fit: contain;
+    padding: 8px;
+    background: #0f172a;
+    border: 1px solid #2a3a52;
     border-radius: 12px;
 }
 
+.noImageEmoji {
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f172a;
+    border: 1px solid #2a3a52;
+    border-radius: 12px;
+    font-size: 72px;
+}
 
-/* Informazioni esercizio */
 .info {
     display: flex;
     justify-content: center;
-
-    background: #1a2538;
-    border: 1px solid #2a3a52;
-
-
     padding: 12px;
+    background: #1e2a3a;
+    border: 1px solid #2a3a52;
     border-radius: 10px;
-
     font-size: 18px;
 }
 
@@ -59,227 +59,197 @@
     margin: 0;
 }
 
-
-/* Lista set */
+/* SERIE */
 .setsContainer {
     display: flex;
     flex-direction: column;
-
     gap: 10px;
 }
 
-
-/* Singolo set */
-.set {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    background: #1a2538;
-    border: 1px solid #2a3a52;
-
-
-    padding: 12px 15px;
-
-    border-radius: 10px;
-}
-
-/* Singolo set */
-.completedSet {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    background: #0de20d99;
-
-    padding: 12px 15px;
-
-    border-radius: 10px;
-}
-
+.set,
+.completedSet,
 .notCompleted {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    background: #e20d0df9;
-
+    gap: 8px;
     padding: 12px 15px;
-
     border-radius: 10px;
+    flex-wrap: wrap;
 }
 
-/* Numero set */
+.set {
+    background: #1e2a3a;
+    border: 1px solid #2a3a52;
+}
+
+/* serie completata */
+.completedSet {
+    background: rgba(34, 197, 94, 0.18);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+/* serie non completata nel riassunto */
+.notCompleted {
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.4);
+}
+
 .setLabel {
+    flex: 0 0 auto;
+    min-width: 60px;
     font-weight: 700;
-    width: 70px;
+    color: #f8fafc;
 }
 
-
-/* Peso e reps */
 .setValue {
-    color: #d1d5db;
-
-    cursor: pointer;
-
     padding: 5px 8px;
-
     border-radius: 6px;
-
+    color: #d1d5db;
+    cursor: pointer;
     transition: background-color 0.2s;
 }
 
 .setValue:hover {
-    background-color: #3a3a3a;
+    background-color: #2a3a52;
 }
 
-
-/* Form modifica set */
-.editSet {
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-}
-
-
-/* Input modifica */
 .input {
     width: 80px;
-
-    background: #141414;
-
-    color: white;
-
-    border: 1px solid #444;
-
-    border-radius: 8px;
-
     padding: 8px;
-
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #2a3a52;
+    border-radius: 8px;
     text-align: center;
-
-    font-size: 14px;
-
+    font-size: 16px;
+    font-family: inherit;
     outline: none;
 }
 
 .input:focus {
-    border-color: #2563eb;
+    border-color: #3a4f6e;
 }
 
+.addSetForm {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 
-/* Bottoni generici */
-button {
-    border: none;
+.addSetForm input {
+    width: 120px;
+    padding: 8px;
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #2a3a52;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
+    font-family: inherit;
+}
 
-    border-radius: 10px;
-
+.card :where(button) {
     padding: 10px 16px;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    color: white;
-
     background-color: #2563eb;
-
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
     transition: transform 0.2s, filter 0.2s;
 }
 
-button:hover {
+.card :where(button):hover {
     transform: scale(1.05);
     filter: brightness(1.15);
 }
 
-
-/* Bottone save modifica */
 .saveButton {
     background-color: #16a34a;
-}
-
-
-/* Bottone rimozione set */
-.removeButton {
-    background-color: #dc2626;
-
-    padding: 7px 12px;
-
-    font-size: 13px;
-}
-
-
-/* Area aggiunta set */
-.addSetForm {
-    display: flex;
-
-    gap: 10px;
-
-    justify-content: center;
-
-    flex-wrap: wrap;
-}
-
-
-/* Input aggiunta */
-.addSetForm input {
-    width: 120px;
-}
-
-
-/* Bottoni principali */
-.actions {
-    display: flex;
-
-    gap: 12px;
-
-    justify-content: center;
 }
 
 .cancelButton {
     background-color: #4b5563;
 }
 
-.cancelButton:hover {
-    background-color: #374151;
+.removeButton {
+    background-color: #dc2626;
+    padding: 7px 12px;
+    font-size: 13px;
+}
+
+.doneButton {
+    background-color: #22c55e;
+    color: #0F172A;
+    padding: 8px 14px;
+    font-size: 16px;
+    line-height: 1;
 }
 
 .deleteButton {
     position: absolute;
     top: 10px;
     right: 10px;
-
     width: 32px;
     height: 32px;
-
-    border: none;
-    border-radius: 50%;
-
+    padding: 0;
     background-color: #e53935;
-    color: white;
-
+    color: #ffffff;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 700;
+}
 
+.restSelect {
+    padding: 8px 12px;
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #2a3a52;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
     cursor: pointer;
-    transition: 0.2s;
+    outline: none;
+    transition: border-color 0.2s;
 }
 
-.deleteButton:hover {
-    background-color: #c62828;
-    transform: scale(1.1);
+.restSelect:focus {
+    border-color: #3a4f6e;
 }
 
-.noImageEmoji {
-    margin-top: 30px;
-    font-size: 100px;
-    height: 100px;
+.restSelect option {
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+@media (max-width: 480px) {
+    .card {
+        width: 100%;
+        padding: 18px;
+        gap: 14px;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    .image,
+    .noImageEmoji {
+        height: 170px;
+    }
+
+    .noImageEmoji {
+        font-size: 56px;
+    }
+
+    .info {
+        font-size: 16px;
+    }
 }

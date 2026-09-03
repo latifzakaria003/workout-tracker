@@ -1,0 +1,48 @@
+.banner {
+    position: sticky;
+    top: 0;
+    z-index: 500;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+
+    padding: 0.6rem 1rem;
+
+    background: rgba(251, 191, 36, 0.14);
+    border-bottom: 1px solid rgba(251, 191, 36, 0.45);
+    color: #fcd34d;
+
+    font-size: 0.85rem;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.dot {
+    flex: 0 0 auto;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #fbbf24;
+    animation: offline-pulse 2s ease-in-out infinite;
+}
+
+@keyframes offline-pulse {
+    50% {
+        opacity: 0.35;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dot {
+        animation: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .banner {
+        font-size: 0.78rem;
+        padding: 0.5rem 0.75rem;
+    }
+}

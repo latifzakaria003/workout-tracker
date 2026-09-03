@@ -1,134 +1,126 @@
 .card {
     position: relative;
-
     display: flex;
     align-items: center;
-
     gap: 12px;
-
     width: 100%;
-    box-sizing: border-box;
-
-    background-color: #292929;
-
-    border-radius: 10px;
     padding: 10px;
-
+    background-color: #1e2a3a;
+    border: 1px solid #2a3a52;
+    border-radius: 10px;
+    color: #e2e8f0;
+    text-align: left;
+    font-family: inherit;
     cursor: pointer;
-
-    transition: 0.2s;
+    transition: background-color 0.2s, border-color 0.2s;
 }
 
-.card:hover {
-    background-color: #383838;
+.card:hover:not(:disabled) {
+    background-color: #2a3a52;
+    border-color: #3a4f6e;
 }
 
+.card:active:not(:disabled) {
+    background-color: #3a4f6e;
+}
 
+.card:focus-visible {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+}
 
+.card:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
 
+/* IMMAGINE */
 .imageContainer {
-    width: 55px;
-    height: 55px;
-
     flex-shrink: 0;
+    width: 60px;
+    height: 60px;
 }
-
 
 .image,
 .noImage {
     width: 100%;
     height: 100%;
-
     border-radius: 8px;
-
-    object-fit: cover;
 }
 
+.image {
+    object-fit: contain;
+    padding: 4px;
+    background-color: #0f172a;
+    border: 1px solid #2a3a52;
+}
 
 .noImage {
-    background-color: #444;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    font-size: 22px;
+    background-color: #0f172a;
+    border: 1px solid #2a3a52;
+    font-size: 24px;
 }
 
-
+/* TESTO */
 .info {
     flex: 1;
-
     min-width: 0;
-
     display: flex;
-
     flex-direction: column;
-
     justify-content: center;
-
+    align-items: flex-start;
     gap: 5px;
 }
 
-
 .name {
-    margin: 0;
-
-    color: white;
-
+    width: 100%;
+    color: #f8fafc;
     font-size: 15px;
-
     font-weight: 600;
-
-    text-align: left;
-
     overflow: hidden;
-
     text-overflow: ellipsis;
-
     white-space: nowrap;
 }
 
-
 .muscle {
-    width: fit-content;
-
-    padding: 3px 8px;
-
+    max-width: 100%;
+    padding: 3px 10px;
+    background-color: #0f172a;
+    border: 1px solid #2a3a52;
     border-radius: 20px;
-
-    background-color: #444;
-
-    color: #ccc;
-
+    color: #94a3b8;
     font-size: 12px;
-
-    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .toast {
     position: absolute;
-
-    top: 20px;
+    top: 8px;
     right: 10px;
-
-    background-color: #22c55e;
-    color: white;
-
-    padding: 8px 15px;
-
-    border-radius: 10px;
-
-    font-size: 14px;
-    font-weight: 600;
-
     z-index: 10;
-
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
     animation: toastAnimation 0.9s ease-out forwards;
 }
 
+.toastOk {
+    background-color: #22c55e;
+    color: #0F172A;
+}
+
+.toastError {
+    background-color: #dc2626;
+    color: #ffffff;
+}
 
 @keyframes toastAnimation {
     0% {
@@ -144,5 +136,22 @@
     100% {
         opacity: 0;
         transform: translateY(-8px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast {
+        animation: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .imageContainer {
+        width: 52px;
+        height: 52px;
+    }
+
+    .name {
+        font-size: 14px;
     }
 }

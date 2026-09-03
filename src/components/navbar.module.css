@@ -2,47 +2,55 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 
     padding: 1rem 2rem;
 
     background-color: #1a2538;
-
-
-    border-bottom: 1px solid #e5e5e5;
-
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #2a3a52;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
 .links {
     text-decoration: none;
-    color: #ffffff;
+    color: #e2e8f0;
     font-weight: 600;
     transition: color 0.2s;
 }
 
 .links:hover {
-    color: #4285F4;
+    color: #7dd3fc;
+}
+
+.active {
+    color: #7dd3fc;
+    font-weight: 600;
 }
 
 .userSection {
     display: flex;
     align-items: center;
     gap: 1rem;
+    min-width: 0;
 }
 
-.userName {
-    font-weight: 500;
-    color: #ffffff;
+/* tronco il nome utente */
+.userSection .links {
+    max-width: 12rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .logOutButton {
+    flex: 0 0 auto;
     padding: 0.5rem 1rem;
 
     border: none;
     border-radius: 8px;
 
     background-color: #ef4444;
-    color: white;
+    color: #ffffff;
 
     cursor: pointer;
     font-weight: 600;
@@ -52,4 +60,24 @@
 
 .logOutButton:hover {
     background-color: #dc2626;
+}
+
+@media (max-width: 480px) {
+    .navbarAdjustment {
+        padding: 0.75rem 1rem;
+        gap: 0.6rem;
+    }
+
+    .userSection {
+        gap: 0.6rem;
+    }
+
+    .userSection .links {
+        max-width: 7rem;
+    }
+
+    .logOutButton {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
 }

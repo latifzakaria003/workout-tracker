@@ -1,0 +1,41 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Profilo utente: l'uid è l'id del documento, quindi non serve controllare il contenuto
+    match /users/{userId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+
+    // Schede di allenamento.
+    // l'userId deve combaciare con l'uid quando leggo/elimino
+    // l'userId del documento aggiunto deve combaciare con l'uid quando creo un documento
+    // entrambi devono combaciare quando aggiorno
+    match /workouts/{workoutId} {
+      allow read, delete: if request.auth != null
+                          && resource.data.userId == request.auth.uid;
+
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid;
+
+      allow update: if request.auth != null
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Cronologia degli allenamenti completati.
+    match /workoutsHistory/{historyId} {
+      allow read, delete: if request.auth != null
+                          && resource.data.userId == request.auth.uid;
+
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid;
+
+      allow update: if request.auth != null
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == request.auth.uid;
+    }
+  }
+}

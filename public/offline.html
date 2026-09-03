@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0F172A" />
+    <title>Offline — WorkoutTracker</title>
+
+    <!--
+      Pagina di fallback: viene servita dal service worker solo se una
+      richiesta di navigazione fallisce e nemmeno index.html è in cache,
+      cioè se la primissima visita all'app avviene senza rete.
+      Gli stili sono inline perché un file CSS esterno potrebbe non essere
+      disponibile proprio nel momento in cui questa pagina serve.
+    -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+
+            background-color: #0F172A;
+            color: #e2e8f0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 380px;
+            padding: 2rem 1.75rem;
+
+            background: #1a2538;
+            border: 1px solid #2a3a52;
+            border-radius: 1rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 2.5rem;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #f8fafc;
+            margin-bottom: 0.6rem;
+        }
+
+        p {
+            font-size: 0.92rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.8rem;
+
+            background: #38bdf8;
+            color: #0F172A;
+            border: none;
+            border-radius: 0.75rem;
+
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #7dd3fc;
+        }
+
+        .status {
+            margin: 1rem 0 0;
+            font-size: 0.78rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="icon" aria-hidden="true">🏋️</div>
+
+        <h1>You're offline</h1>
+
+        <p>
+            WorkoutTracker needs to load once with a connection before it can
+            work offline. Reconnect and try again.
+        </p>
+
+        <button type="button" onclick="window.location.reload()">
+            Retry
+        </button>
+
+        <p class="status" id="status"></p>
+    </div>
+
+    <script>
+        // Ricarica da sola appena la connessione torna, così l'utente
+        // non deve accorgersene e premere il bottone.
+        const status = document.getElementById("status");
+
+        const update = () => {
+            if (navigator.onLine) {
+                status.textContent = "Connection restored, reloading…";
+                window.location.reload();
+            } else {
+                status.textContent = "Waiting for a connection…";
+            }
+        };
+
+        window.addEventListener("online", update);
+        update();
+    </script>
+</body>
+
+</html>

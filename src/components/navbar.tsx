@@ -1,50 +1,62 @@
 import { auth } from '../firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { signOut } from 'firebase/auth';
-import { Link } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useSession } from '../contexts/sessionContext';
 import styles from './navbar.module.css';
 
 export const Navbar = () => {
-    const [user] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
+    const { clearSession } = useSession();
+    const navigate = useNavigate();
+
+    // cambio lo stile del link una volta premuto
+    const linkClass = ({ isActive }: { isActive: boolean }) =>
+        isActive ? `${styles.links} ${styles.active}` : styles.links;
 
     const logOut = async () => {
-        await signOut(auth);
-    }
+        try {
+            clearSession();
+            await signOut(auth);
+            navigate("/login");
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // nome dell'utente
+    const profileLabel =
+        user?.displayName || user?.email?.split("@")[0] || "Profile";
 
     return (
-        <>
-            <div className={styles.navbarAdjustment}>
+        <nav className={styles.navbarAdjustment}>
 
-                <div className={styles.userSection}>
-                    <Link to="/" className={styles.links}>Home</Link>
-                    {!user && <Link to="/login" className={styles.links}>Log In</Link>}
-                </div>
+            <div className={styles.userSection}>
+                <NavLink to="/" className={linkClass} end>Home</NavLink>
 
-                <div className={styles.userSection}>
-                    <Link to="/" className={styles.links}>{user?.displayName}</Link>
+                {user && (
+                    <NavLink to="/history" className={linkClass}>History</NavLink>
+                )}
+            </div>
 
-                    {user ? <>
-                        <div className={styles.userSection}>
-                            <Link to="/history" className={styles.links}>History</Link>
-                        </div>
+            <div className={styles.userSection}>
+                {!loading && !user && (
+                    <NavLink to="/login" className={linkClass}>Log In</NavLink>
+                )}
 
-                        <button
-                            className={styles.logOutButton}
-                            onClick={logOut}
-                        >
+                {user && (
+                    <>
+                        <NavLink to="/profile" className={linkClass}>
+                            {profileLabel}
+                        </NavLink>
+
+                        <button className={styles.logOutButton} onClick={logOut}>
                             Log Out
                         </button>
                     </>
-                        :
-                        (
-                            <Link to="/" className={styles.links}>Profile</Link>
-                        )}
-                </div>
-
-
+                )}
             </div>
-        </>
-    )
 
-
-}
+        </nav>
+    );
+};

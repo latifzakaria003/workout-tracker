@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import type { WgerExercise, WgerApiResponse } from "../types";
 import { ExerciseContext } from "./exerciseContext";
 
-// esercizi cardio che posso fare alla fine
+// filtri per wger
+
+// ID per esercizi in lingua inglese
+const ENGLISH_ID = 2;
+
+// esercizi cardio accettabili
 const CONTINUOUS_CARDIO_ID = [
     908,
     962,
@@ -15,32 +20,46 @@ const CONTINUOUS_CARDIO_ID = [
     1548
 ];
 
+// parole chiave di esercizi non validi
 const EXCLUDED_KEYWORDS = [
-    // breathing
+    // esercizi di respirazione 
     "breathing",
     "breath",
     "respir",
     "diaphragmatic",
 
-    // stretching
+    // esercizi di stretching
     "stretch",
     "stretching",
+    "roller",
+    "foam",
 
-    // warm-up
+    // esercizi di riscaldamento
     "warm up",
     "warmup",
     "warm-up",
     "cool down",
     "cooldown",
 
-    // meditation / relaxation
+    // esercizi di rilassamento e meditazione
     "meditation",
     "relaxation",
 
-    // rehabilitation
+    // esercizi di riabilitazione
     "rehab",
     "rehabilitation",
 
+    // esercizi di riposo
+    "rest",
+    "resting",
+
+    // esercizi di posa
+    "pose",
+    "posing",
+
+    // esercizi di inclinazione
+    "tilt",
+    "tilting"
 ];
 
 export const ExerciseProvider = ({ children }: { children: React.ReactNode }) => {
@@ -50,37 +69,34 @@ export const ExerciseProvider = ({ children }: { children: React.ReactNode }) =>
     useEffect(() => {
         const fetchExercises = async () => {
             try {
+                // recupero esercizi
                 const response = await fetch(
                     "https://wger.de/api/v2/exerciseinfo/?limit=852"
                 );
 
+
                 const data: WgerApiResponse = await response.json();
                 const mappedExercises = data.results
                     .filter((exercise) => {
-
+                        // filtraggio degli esercizi
                         const translation = exercise.translations.find(
-                            t => t.language === 2
+                            t => t.language === ENGLISH_ID
                         );
 
                         const name = translation?.name?.toLowerCase() ?? "";
 
-                        // Elimina esercizi con keyword non desiderate
-                        if (EXCLUDED_KEYWORDS.some(word => name.includes(word))) {
+                        if (EXCLUDED_KEYWORDS.some(word => name.includes(word)))
                             return false;
-                        }
 
-                        // Se è cardio, tieni SOLO quello continuo
-                        if (exercise.category.name.toLowerCase() === "cardio") {
+                        if (exercise.category.name.toLowerCase() === "cardio")
                             return CONTINUOUS_CARDIO_ID.includes(exercise.id);
-                        }
 
-                        // Tutti gli altri esercizi vanno bene
                         return true;
                     })
                     .map((exercise) => {
-
+                        // recupero degli esercizi che passano il filtro
                         const translation = exercise.translations.find(
-                            t => t.language === 2
+                            t => t.language === ENGLISH_ID
                         );
 
                         const muscle: string =

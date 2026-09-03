@@ -1,206 +1,306 @@
+/* CONTENITORE */
 .generatorContainer {
-    width: min(950px, 90%);
-    margin: 40px auto;
-    padding: 35px;
-    background: #1f1f1f;
-    border: 1px solid #333;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    width: min(820px, 92%);
+    margin: 2rem auto 3rem;
+    padding: 1.75rem;
+
+    background: #1a2538;
+    border: 1px solid #2a3a52;
+    border-radius: 1rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 
     display: flex;
     flex-direction: column;
-    gap: 35px;
+    gap: 2rem;
 }
 
+/* SEZIONI */
 .section {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 0.875rem;
 }
 
 .section h2 {
     margin: 0;
-    color: white;
-    font-size: 1.4rem;
+    font-size: 0.75rem;
     font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #94a3b8;
 }
 
-/* ---------------- GOAL ---------------- */
-
+/* OBIETTIVO */
 .goalGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.75rem;
 }
 
 .goalCard {
-    background: #2b2b2b;
-    border: 2px solid transparent;
-    border-radius: 14px;
-    transition: 0.25s;
+    background: #101826;
+    border: 1px solid #2a3a52;
+    border-radius: 0.75rem;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
 
 .goalCard:hover {
-    border-color: #4caf50;
+    border-color: #3a4f6e;
     transform: translateY(-2px);
+}
+
+/* has() legge lo stato del figlio */
+.goalCard:has(input:checked) {
+    background: rgba(56, 189, 248, 0.1);
+    border-color: #38bdf8;
+}
+
+.goalCard:has(input:focus-visible) {
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
 }
 
 .goalCard label {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 16px;
-    cursor: pointer;
-    color: white;
-    font-size: 15px;
-    text-transform: capitalize;
+    gap: 0.6rem;
     width: 100%;
     height: 100%;
+    padding: 0.9rem;
     box-sizing: border-box;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.goalCard:has(input:checked) label {
+    color: #f8fafc;
+    font-weight: 600;
 }
 
 .goalCard input[type="radio"] {
-    width: 18px;
-    height: 18px;
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: 0 0 auto;
+    accent-color: #38bdf8;
     cursor: pointer;
 }
 
-/* ---------------- EQUIPMENT ---------------- */
-
+/* EQUIPAGGIAMENTO */
 .equipmentGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.6rem;
 }
 
 .equipmentItem {
-    background: #2b2b2b;
-    border-radius: 14px;
-    transition: 0.2s;
+    background: #101826;
+    border: 1px solid #2a3a52;
+    border-radius: 0.75rem;
+    transition: background 0.2s, border-color 0.2s;
 }
 
 .equipmentItem:hover {
-    background: #353535;
+    border-color: #3a4f6e;
+}
+
+.equipmentItem:has(input:checked) {
+    background: rgba(56, 189, 248, 0.1);
+    border-color: #38bdf8;
+}
+
+.equipmentItem:has(input:focus-visible) {
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
 }
 
 .equipmentItem label {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 14px;
-    color: white;
-    cursor: pointer;
+    gap: 0.6rem;
     width: 100%;
     height: 100%;
+    padding: 0.75rem;
     box-sizing: border-box;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    cursor: pointer;
 }
 
 .equipmentItem input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: 0 0 auto;
+    accent-color: #38bdf8;
     cursor: pointer;
 }
 
-/* ---------------- SETTINGS ---------------- */
-
+/* IMPOSTAZIONI */
 .settingsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
 }
 
 .setting {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.5rem;
 }
 
 .setting label {
-    color: white;
+    color: #94a3b8;
+    font-size: 0.75rem;
     font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .setting select {
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #444;
-    background: #2b2b2b;
-    color: white;
-    font-size: 15px;
-    transition: 0.2s;
+    padding: 0.75rem;
+    background: #101826;
+    color: #e2e8f0;
+    border: 1px solid #2a3a52;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-family: inherit;
     cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .setting select:focus {
     outline: none;
-    border-color: #4caf50;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
 }
 
-/* ---------------- SUMMARY ---------------- */
-
+/* RIASSUNTO */
 .summaryCard {
-    background: #2b2b2b;
-    border-radius: 16px;
-    padding: 20px;
+    padding: 1.25rem;
+    background: #101826;
+    border: 1px solid #2a3a52;
+    border-radius: 0.875rem;
 
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.5rem;
 }
 
 .summaryCard h2 {
-    margin: 0 0 10px;
-    color: white;
+    margin: 0 0 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #94a3b8;
 }
 
 .summaryCard span {
-    color: #d6d6d6;
-    font-size: 15px;
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    /* vado a capo */
+    overflow-wrap: anywhere;
 }
 
 .summaryCard strong {
-    color: white;
+    color: #f8fafc;
+    font-weight: 600;
 }
 
-/* ---------------- BUTTON ---------------- */
+/* ALTRE AZIONI */
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #2a3a52;
+}
+
+.actions h3 {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.actions input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: #101826;
+    color: #e2e8f0;
+    border: 1px solid #2a3a52;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.actions input::placeholder {
+    color: #64748b;
+    opacity: 1;
+}
+
+.actions input:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.error {
+    margin: 0;
+    padding: 0.7rem 1rem;
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.45);
+    border-radius: 0.75rem;
+    color: #fca5a5;
+    font-size: 0.875rem;
+    line-height: 1.45;
+}
 
 .generateBtn {
-    padding: 16px;
+    padding: 1rem;
+    background: #38bdf8;
+    color: #0F172A;
     border: none;
-    border-radius: 14px;
-    background: #4caf50;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
+    border-radius: 0.75rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-family: inherit;
     cursor: pointer;
-    transition: 0.25s;
+    transition: background 0.2s, transform 0.2s;
 }
 
-.generateBtn:hover {
-    background: #43a047;
+.generateBtn:hover:not(:disabled) {
+    background: #7dd3fc;
     transform: translateY(-2px);
 }
 
-.generateBtn:active {
+.generateBtn:active:not(:disabled) {
     transform: scale(0.98);
 }
 
-/* ---------------- SCROLLBAR ---------------- */
-
-.equipmentGrid::-webkit-scrollbar {
-    width: 8px;
+.generateBtn:disabled {
+    background: #1e2a3a;
+    color: #64748b;
+    cursor: not-allowed;
+    transform: none;
 }
 
-.equipmentGrid::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 8px;
-}
 
-/* ---------------- RESPONSIVE ---------------- */
-
-@media (max-width: 700px) {
+@media (max-width: 768px) {
     .generatorContainer {
-        padding: 25px;
+        width: 94%;
+        margin: 1rem auto 2rem;
+        padding: 1.25rem;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .generatorContainer {
+        width: 100%;
+        margin: 0.75rem auto 1.5rem;
+        padding: 1rem;
+        border-radius: 0.875rem;
     }
 
     .goalGrid,
@@ -210,6 +310,7 @@
     }
 
     .generateBtn {
-        font-size: 16px;
+        font-size: 1rem;
+        padding: 0.9rem;
     }
 }

@@ -1,62 +1,160 @@
 .container {
     position: fixed;
     inset: 0;
-    z-index: 999999;
-
-
+    z-index: 999;
+    background: rgba(8, 13, 23, 0.7);
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
 }
 
 .modal {
-    width: 90%;
+    width: 100%;
     max-width: 600px;
-    max-height: 80vh;
-
-    background-color: #1f1f1f;
+    max-height: 85dvh;
+    padding: 20px;
+    background-color: #1a2538;
+    border: 1px solid #2a3a52;
     border-radius: 16px;
-    padding: 25px;
-
-    color: white;
-
+    color: #e2e8f0;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-
     display: flex;
     flex-direction: column;
-    gap: 20px;
-
+    gap: 16px;
     overflow: hidden;
+}
+
+.header {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .searchInput {
     width: 100%;
-    box-sizing: border-box;
-
-    background-color: #292929;
-    color: white;
-
-    border: 1px solid #444;
-    border-radius: 10px;
-
     padding: 12px 15px;
+    background-color: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #2a3a52;
+    border-radius: 10px;
     font-size: 16px;
-
+    font-family: inherit;
     outline: none;
 }
 
-.searchInput:focus {
-    border-color: #2563eb;
+.searchInput::placeholder {
+    color: #64748b;
+    opacity: 1;
 }
 
+.searchInput:focus {
+    border-color: #3a4f6e;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.headerActions {
+    display: flex;
+    gap: 10px;
+}
+
+.headerActions button {
+    flex: 1;
+    padding: 10px 16px;
+    background: #1e2a3a;
+    color: #e2e8f0;
+    border: 1px solid #2a3a52;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.headerActions button:hover:not(:disabled) {
+    background: #2a3a52;
+    border-color: #3a4f6e;
+}
+
+.headerActions button:disabled {
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+/* FILTRI */
+.filters {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: #101826;
+    border: 1px solid #2a3a52;
+    border-radius: 12px;
+}
+
+.filters select {
+    width: 100%;
+    padding: 10px 12px;
+    background: #1e2a3a;
+    color: #e2e8f0;
+    border: 1px solid #2a3a52;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.section h2 {
+    margin: 0 0 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.equipmentGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 8px;
+}
+
+.equipmentItem label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #1e2a3a;
+    border: 1px solid #2a3a52;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.equipmentItem label:hover {
+    border-color: #3a4f6e;
+}
+
+.equipmentItem input {
+    accent-color: #38bdf8;
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+}
+
+/* LISTA ESERCIZI*/
 .exerciseList {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
-
-    overflow-y: auto;
-    flex: 1;
-
     padding-right: 5px;
 }
 
@@ -64,9 +162,31 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
     height: 200px;
-
-    color: white;
+    color: #94a3b8;
     font-size: 18px;
+}
+
+.hint {
+    flex: 0 0 auto;
+    margin: 0;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0.5rem;
+    }
+
+    .modal {
+        max-height: 92dvh;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .equipmentGrid {
+        grid-template-columns: 1fr;
+    }
 }

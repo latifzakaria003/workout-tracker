@@ -1,0 +1,400 @@
+.page {
+    min-height: 100dvh;
+    padding: 1.5rem 1.5rem 3rem;
+    background-color: #0F172A;
+    color: #e2e8f0;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 820px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* PROFILO */
+.identity {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: #1a2538;
+    border: 1px solid #2a3a52;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.avatar {
+    flex: 0 0 auto;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1px solid #2a3a52;
+    background: #0f172a;
+    color: #7dd3fc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.identityText {
+    min-width: 0;
+}
+
+.name {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #f8fafc;
+    overflow-wrap: anywhere;
+}
+
+.email {
+    margin: 0.2rem 0 0;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    overflow-wrap: anywhere;
+}
+
+/* SEZIONI */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.sectionTitle {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.totalBadge {
+    padding: 0.25rem 0.8rem;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 2rem;
+    color: #7dd3fc;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* INFORMAZIONI PERSONALI */
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+}
+
+.infoItem {
+    padding: 1rem 1.25rem;
+    background: #1a2538;
+    border: 1px solid #2a3a52;
+    border-radius: 1rem;
+}
+
+.infoWide {
+    grid-column: 1 / -1;
+}
+
+.infoLabel {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.infoValue {
+    margin: 0.3rem 0 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #f8fafc;
+    overflow-wrap: anywhere;
+}
+
+/* MODIFICA INFORMAZIONI PERSONALI */
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 0.9rem;
+    padding: 1.25rem;
+    background: #1a2538;
+    border: 1px solid #2a3a52;
+    border-radius: 1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.fieldWide {
+    grid-column: 1 / -1;
+}
+
+.fieldLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.input {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #2a3a52;
+    border-radius: 0.75rem;
+    /* 1rem pieno: sotto i 16px iOS zooma al focus e non torna indietro */
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #3a4f6e;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.formActions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.primaryButton,
+.ghostButton {
+    padding: 0.55rem 1.4rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.primaryButton {
+    background: #1e2a3a;
+    border: 1px solid #3a4f6e;
+    color: #e2e8f0;
+}
+
+.primaryButton:hover:not(:disabled) {
+    background: #2a3a52;
+}
+
+.ghostButton {
+    background: transparent;
+    border: 1px solid #2a3a52;
+    color: #94a3b8;
+}
+
+.ghostButton:hover:not(:disabled) {
+    background: #1e2a3a;
+    color: #e2e8f0;
+    border-color: #3a4f6e;
+}
+
+.primaryButton:disabled,
+.ghostButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* CALENDARIO */
+.calendar {
+    padding: 1.25rem;
+    background: #1a2538;
+    border: 1px solid #2a3a52;
+    border-radius: 1rem;
+}
+
+.calendarHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.monthLabel {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f8fafc;
+    text-transform: capitalize;
+}
+
+.navButton {
+    width: 2rem;
+    height: 2rem;
+    background: #1e2a3a;
+    border: 1px solid #2a3a52;
+    border-radius: 50%;
+    color: #e2e8f0;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.navButton:hover:not(:disabled) {
+    background: #2a3a52;
+    border-color: #3a4f6e;
+}
+
+.navButton:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.weekdayRow,
+.dayGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.35rem;
+}
+
+.weekdayRow {
+    margin-bottom: 0.35rem;
+}
+
+.weekday {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+.day,
+.dayBlank {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.6rem;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.day {
+    background: #0f172a;
+    border: 1px solid #2a3a52;
+    color: #64748b;
+}
+
+/* giorno con allenamento */
+.dayActive {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: #0F172A;
+    font-weight: 700;
+}
+
+.dayToday {
+    box-shadow: 0 0 0 2px #7dd3fc;
+}
+
+.dayBlank {
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.calendarFooter {
+    margin: 1rem 0 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.state {
+    margin: 0;
+    padding: 3rem 0;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+.error {
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.45);
+    border-radius: 1rem;
+    color: #fca5a5;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 1rem 1rem 2rem;
+    }
+
+    .container {
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page {
+        padding: 0.75rem 0.75rem 1.5rem;
+    }
+
+    .identity {
+        padding: 1.25rem;
+        gap: 1rem;
+    }
+
+    .avatar {
+        width: 52px;
+        height: 52px;
+        font-size: 1.3rem;
+    }
+
+    .name {
+        font-size: 1.2rem;
+    }
+
+    .calendar {
+        padding: 1rem 0.75rem;
+    }
+
+    .day,
+    .dayBlank {
+        border-radius: 0.5rem;
+        font-size: 0.78rem;
+    }
+
+    .weekdayRow,
+    .dayGrid {
+        gap: 0.25rem;
+    }
+}

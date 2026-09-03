@@ -1,26 +1,27 @@
-/* workoutCard.module.css */
-
 .card {
     position: relative;
-    width: 380px;
-    max-width: 100%;
-    /* per sicurezza su schermi molto piccoli */
+    width: 100%;
+    max-width: 520px;
     margin: 0 auto;
-    /* centra la card orizzontalmente */
     padding: 18px 28px 24px;
-    border-radius: 20px;
+
     background: #1a2538;
-    color: #ffffff;
+    border: 1px solid #2a3a52;
+    border-radius: 20px;
+    color: #e2e8f0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    gap: 24px;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     cursor: pointer;
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
+    border-color: #3a4f6e;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -28,25 +29,31 @@
     transform: scale(0.98);
 }
 
-/* Pulsante elimina (✕) – stile originale */
 .deleteButton {
     position: absolute;
     top: 10px;
     right: 10px;
+    z-index: 1;
+
     width: 32px;
     height: 32px;
+    padding: 0;
+
     border: none;
     border-radius: 50%;
     background-color: #e53935;
     color: #ffffff;
+
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 700;
+    line-height: 1;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
     cursor: pointer;
-    transition: 0.2s;
-    z-index: 1;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 .deleteButton:hover {
@@ -58,26 +65,25 @@
     transform: scale(0.9);
 }
 
-/* Titolo */
+/* TITOLO */
 .title {
-    font-size: 32px;
-    font-weight: 700;
+    padding: 0 2.5rem;
     margin: 0;
-    color: #ffffff;
+    font-size: 28px;
+    font-weight: 700;
+    color: #f8fafc;
     text-align: center;
-    word-break: break-word;
-    padding-right: 0;
-    /* non serve spazio per il pulsante perché è assoluto e non interferisce */
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
 }
 
-/* Container statistiche */
+/* STATISTICHE */
 .stats {
     display: flex;
-    justify-content: center;
-    gap: 80px;
+    justify-content: space-around;
+    gap: 1.5rem;
 }
 
-/* Singola stat */
 .stat {
     display: flex;
     flex-direction: column;
@@ -86,43 +92,34 @@
 }
 
 .label {
-    font-size: 15px;
-    color: #a0a0a0;
+    font-size: 0.72rem;
+    color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
     font-weight: 600;
 }
 
 .value {
     font-size: 28px;
     font-weight: 700;
-    color: #4ade80;
-    /* verde brillante come nell'originale */
+    color: #7dd3fc;
+    font-variant-numeric: tabular-nums;
 }
 
-/* Responsive per schermi piccoli */
 @media (max-width: 420px) {
     .card {
-        width: 100%;
         padding: 16px 18px 20px;
         border-radius: 16px;
-        gap: 20px;
+        gap: 18px;
     }
 
     .title {
-        font-size: 24px;
-    }
-
-    .stats {
-        gap: 40px;
+        font-size: 22px;
+        padding: 0 2.25rem;
     }
 
     .value {
         font-size: 22px;
-    }
-
-    .label {
-        font-size: 13px;
     }
 
     .deleteButton {
@@ -136,12 +133,13 @@
 
 @media (max-width: 360px) {
     .stats {
-        gap: 20px;
+        gap: 1rem;
         flex-wrap: wrap;
     }
 
     .title {
         font-size: 20px;
+        padding: 0 2rem;
     }
 
     .value {

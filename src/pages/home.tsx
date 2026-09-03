@@ -1,39 +1,45 @@
 import { Navbar } from '../components/navbar';
 import styles from './home.module.css';
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db, auth } from '../firebase/firebase';
 import type { Workout, WorkoutCardProps } from '../types'
 import { WorkoutCard } from '../components/workoutCard';
 import { useNavigate } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 export const Home = () => {
 
     const navigate = useNavigate();
 
-    const [workouts, setWorkouts] = useState<WorkoutCardProps[]>([]);
+    const [workouts, setWorkouts] = useState<WorkoutCardProps[]>([]);   // lista di workout
+    const [user] = useAuthState(auth);
+    const [loading, setLoading] = useState(true);
 
+    // prendo i workout da Firestore
     const getWorkout = async () => {
+        if (!user) return;
+
         try {
-            const snapshot = await getDocs(collection(db, "workouts"));
+            // prendo i workouts dell'utente
+            const snapshot = await getDocs(query(
+                collection(db, "workouts"),
+                where("userId", "==", user.uid)
+            ));
 
+            // metto i workouts in una lista
             const workoutList: WorkoutCardProps[] = [];
-
             snapshot.forEach((doc) => {
-
                 const workout = doc.data() as Workout;
+                const exercises = Object.values(workout.exercises ?? {});
 
-                const exercises = Object.values(workout.exercises);
-
+                // calcolo volume totale
                 let volume = 0;
-
                 exercises.forEach((exercise) => {
-
-                    Object.values(exercise.sets).forEach((set) => {
-                        const weight = (set.weight == 0) ? 1 : set.weight;
+                    Object.values(exercise.sets ?? {}).forEach((set) => {
+                        const weight = (set.weight === 0) ? 1 : set.weight;
                         volume += weight * set.reps;
                     });
-
                 });
 
                 workoutList.push({
@@ -45,17 +51,20 @@ export const Home = () => {
                     onUpdate: () => { }
                 });
             });
-            workoutList.sort((a, b) => a.cardOrder - b.cardOrder);
+
+            workoutList.sort((a, b) => a.cardOrder - b.cardOrder);  // ordino
             setWorkouts(workoutList);
-            getWorkout();
         } catch (err) {
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     }
 
     useEffect(() => {
         getWorkout();
-    }, []);
+    }, [user]);
+
 
     return (
 
@@ -80,21 +89,23 @@ export const Home = () => {
                     </button>
                 </div>
             </div>
-            <div>
-                {workouts.map((workout, index) => (
-                    <>
-                        <br></br>
+            <div className={styles.workoutList}>
+
+
+                {loading ?
+                    <p className={styles.state}>Loading…</p>
+                    :
+                    workouts.map((workout, index) => (
                         <WorkoutCard
+                            key={workout.id}
                             id={workout.id}
                             cardOrder={index}
                             name={workout.name}
                             exerciseCount={workout.exerciseCount}
                             volume={workout.volume}
                             onUpdate={getWorkout}
-
                         />
-                    </>
-                ))}
+                    ))}
             </div>
         </>
     );
